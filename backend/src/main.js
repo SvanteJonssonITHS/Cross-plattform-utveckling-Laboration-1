@@ -6,6 +6,9 @@ const express = require('express');
 const history = require('connect-history-api-fallback');
 const path = require('path');
 
+// Internal dependencies
+const { sequelize, connectToMySQL } = require('./config/MySQL');
+
 // Variable declaration
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,6 +29,19 @@ app.use('/api', require('./routes/api.js'));
 app.use(history());
 app.use('/', express.static(path.join(path.resolve(), '../frontend/dist')));
 
-app.listen(port, () => {
-	console.log(`Server is running on port ${port}\nAccess it on http://localhost:${port}`);
-});
+(async () => {
+	try {
+		// Connect to MySQL
+		connectToMySQL();
+
+		// Validate connection
+		sequelize.authenticate();
+
+		// Start the server
+		app.listen(port, () => {
+			console.log(`Server is running on port ${port}\nAccess it on http://localhost:${port}`);
+		});
+	} catch (error) {
+		console.log(error);
+	}
+})();
