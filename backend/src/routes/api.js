@@ -4,6 +4,8 @@ const express = require('express');
 // Variable declaration
 const router = express.Router();
 
+router.use('/user', require('./user.routes'));
+
 router.get('/', async (_req, res) => {
 	res.status(200).json({
 		success: true,
