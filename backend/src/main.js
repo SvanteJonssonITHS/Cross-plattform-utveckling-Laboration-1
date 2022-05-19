@@ -7,7 +7,8 @@ const history = require('connect-history-api-fallback');
 const path = require('path');
 
 // Internal dependencies
-const { sequelize, connectToMySQL } = require('./config/MySQL');
+const { sequelize, connectToMySQL } = require('./config/mySQL');
+const establishAssociations = require('./config/associations');
 
 // Variable declaration
 const app = express();
@@ -32,10 +33,16 @@ app.use('/', express.static(path.join(path.resolve(), '../frontend/dist')));
 (async () => {
 	try {
 		// Connect to MySQL
-		connectToMySQL();
+		await connectToMySQL();
 
 		// Validate connection
-		sequelize.authenticate();
+		await sequelize.authenticate();
+
+		// Establish associations
+		await establishAssociations();
+
+		// Sync MySQL models
+		await sequelize.sync();
 
 		// Start the server
 		app.listen(port, () => {
