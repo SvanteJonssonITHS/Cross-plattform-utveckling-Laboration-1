@@ -1,0 +1,37 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"main": "src/main.js",
+	"scripts": {
+		"dev": "nodemon",
+		"start": "forever src/main.js",
+		"lint": "eslint .",
+		"format": "prettier . --write"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/SvanteJonssonITHS/Cross-plattform-utveckling-Laboration-1.git"
+	},
+	"author": "Svante Jonsson",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/SvanteJonssonITHS/Cross-plattform-utveckling-Laboration-1/issues"
+	},
+	"homepage": "https://github.com/SvanteJonssonITHS/Cross-plattform-utveckling-Laboration-1#readme",
+	"devDependencies": {
+		"eslint": "^8.15.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"nodemon": "^2.0.16",
+		"prettier": "^2.6.2"
+	},
+	"dependencies": {
+		"bcrypt": "^5.0.1",
+		"connect-history-api-fallback": "^1.6.0",
+		"dotenv": "^16.0.0",
+		"express": "^4.18.1",
+		"forever": "^4.0.3",
+		"mysql2": "^2.3.3",
+		"sequelize": "^6.19.2"
+	}
+}
