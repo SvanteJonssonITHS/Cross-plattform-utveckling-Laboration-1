@@ -178,4 +178,41 @@ router.put('/', async (req, res) => {
 	}
 });
 
+/**
+ * @api {delete} /api/chat/ Delete a chat
+ */
+router.delete('/', async (req, res) => {
+	const { id } = req.body;
+
+	if (!id) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a chat id'
+		});
+	}
+
+	try {
+		const chat = await ChatModel.findByPk(id);
+
+		if (!chat) {
+			res.status(404).json({
+				success: false,
+				message: 'Chat not found'
+			});
+		}
+
+		await chat.destroy();
+
+		res.status(200).json({
+			success: true,
+			message: 'Chat deleted successfully'
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message
+		});
+	}
+});
+
 module.exports = router;
