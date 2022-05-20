@@ -123,4 +123,54 @@ router.post('/logout', (req, res) => {
 	});
 });
 
+/**
+ * @api {put} /api/user/ Update a user
+ */
+router.put('/', async (req, res) => {
+	const id = req.user ? req.user.dataValues.id : null;
+	const { name, password } = req.body;
+	const fields = {};
+
+	if (!id) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a user id'
+		});
+	}
+
+	if (name) fields.name = name;
+	if (password) fields.password = password;
+
+	if (Object.keys(fields).length === 0) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide at least one field to update'
+		});
+	}
+
+	try {
+		let user = await UserModel.findByPk(id);
+
+		if (!user) {
+			res.status(404).json({
+				success: false,
+				message: 'User not found'
+			});
+		}
+
+		user = await user.update(fields);
+
+		res.status(200).json({
+			success: true,
+			message: 'User updated successfully',
+			data: [user]
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message
+		});
+	}
+});
+
 module.exports = router;
