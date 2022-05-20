@@ -99,6 +99,9 @@ router.post('/login', async (req, res) => {
 						message: error
 					});
 				}
+
+				user.password = undefined;
+
 				return res.status(200).json({
 					success: true,
 					message: 'User logged in successfully',
@@ -107,6 +110,17 @@ router.post('/login', async (req, res) => {
 			});
 		}
 	})(req, res);
+});
+
+/**
+ * @api {post} /api/user/logout Logout a user
+ */
+router.post('/logout', (req, res) => {
+	req.logout();
+	res.status(200).json({
+		success: true,
+		message: 'User logged out successfully'
+	});
 });
 
 module.exports = router;
