@@ -173,4 +173,41 @@ router.put('/', async (req, res) => {
 	}
 });
 
+/**
+ * @api {delete} /api/user/ Delete a user
+ */
+router.delete('/', async (req, res) => {
+	const id = req.user ? req.user.dataValues.id : null;
+
+	if (!id) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a user id'
+		});
+	}
+
+	try {
+		const user = await UserModel.findByPk(id);
+
+		if (!user) {
+			res.status(404).json({
+				success: false,
+				message: 'User not found'
+			});
+		}
+
+		await user.destroy();
+
+		res.status(200).json({
+			success: true,
+			message: 'User deleted successfully'
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message
+		});
+	}
+});
+
 module.exports = router;
