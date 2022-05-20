@@ -104,4 +104,78 @@ router.post('/', async (req, res) => {
 	}
 });
 
+/**
+ * @api {put} /api/chat/ Update a chat
+ */
+router.put('/', async (req, res) => {
+	const ownerId = req.user ? req.user.dataValues.id : null;
+	const { id, name } = req.body;
+	let members = req.body.members;
+	const fields = {};
+
+	if (!id) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a chat id'
+		});
+	}
+
+	if (name) fields.name = name;
+	if (members) {
+		members = members.split(',');
+		members.push(ownerId);
+		if (members.length > 1) {
+			fields.members = members;
+		}
+	}
+
+	if (Object.keys(fields).length === 0) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide at least one field to update'
+		});
+	}
+
+	try {
+		let chat = await ChatModel.findByPk(id);
+
+		if (!chat) {
+			res.status(404).json({
+				success: false,
+				message: 'Chat not found'
+			});
+		}
+
+		chat = await chat.update(fields);
+
+		if (fields.members) {
+			const newMembers = await UserModel.findAll({
+				where: { id: members, deleted: false }
+			});
+
+			if (newMembers.length > 1) {
+				let oldMembers = await chat.getUsers();
+				await chat.removeUser(oldMembers);
+				await chat.setUsers(newMembers);
+			} else {
+				res.status(500).json({
+					success: false,
+					message: 'Chat could not be updated'
+				});
+			}
+		}
+
+		res.status(200).json({
+			success: true,
+			message: 'Chat updated successfully',
+			data: [chat]
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message
+		});
+	}
+});
+
 module.exports = router;
