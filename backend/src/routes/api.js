@@ -4,6 +4,7 @@ const express = require('express');
 // Variable declaration
 const router = express.Router();
 
+router.use('/chat', require('./chat.routes'));
 router.use('/user', require('./user.routes'));
 
 router.get('/', async (_req, res) => {
