@@ -5,6 +5,7 @@ const router = express.Router();
 // Internal dependencies
 const { Op } = require('sequelize');
 const { UserModel } = require('../models');
+const { passport } = require('../config/passport');
 
 /**
  * @api {get} /api/user/ Get all users
@@ -73,6 +74,39 @@ router.post('/register', async (req, res) => {
 			});
 		}
 	}
+});
+
+/**
+ * @api {post} /api/user/login Login a user
+ */
+router.post('/login', async (req, res) => {
+	passport.authenticate('local', (error, user) => {
+		if (error) {
+			return res.status(500).json({
+				success: false,
+				message: error
+			});
+		} else if (!user) {
+			return res.status(401).json({
+				success: false,
+				message: 'Incorrect email or password'
+			});
+		} else {
+			req.login(user, (error) => {
+				if (error) {
+					return res.status(500).json({
+						success: false,
+						message: error
+					});
+				}
+				return res.status(200).json({
+					success: true,
+					message: 'User logged in successfully',
+					data: [user]
+				});
+			});
+		}
+	})(req, res);
 });
 
 module.exports = router;
