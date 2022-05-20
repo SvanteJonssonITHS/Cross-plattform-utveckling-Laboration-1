@@ -33,6 +33,10 @@ user.addHook('beforeCreate', async (user) => {
 	user.password = await bcrypt.hash(user.password, 10);
 });
 
+user.addHook('beforeUpdate', async (user) => {
+	user.password = await bcrypt.hash(user.password, 10);
+});
+
 user.prototype.validPassword = function (password) {
 	return bcrypt.compare(password, this.password);
 };
