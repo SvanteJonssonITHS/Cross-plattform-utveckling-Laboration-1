@@ -13,7 +13,7 @@ const { passport } = require('../config/passport');
 router.get('/', async (req, res) => {
 	const { ids, names, emails } = req.query;
 
-	const conditions = {};
+	const conditions = { deleted: false };
 
 	if (ids) conditions.id = { [Op.in]: ids.split(',') };
 
@@ -196,7 +196,7 @@ router.delete('/', async (req, res) => {
 			});
 		}
 
-		await user.destroy();
+		await user.update({ deleted: true });
 
 		res.status(200).json({
 			success: true,

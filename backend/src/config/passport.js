@@ -9,7 +9,7 @@ const initializePassport = () => {
 	passport.use(
 		// Set the strategy to use
 		new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
-			const user = await UserModel.findOne({ where: { email } });
+			const user = await UserModel.findOne({ where: { email, deleted: false } });
 			if (!user || !(await user.validPassword(password))) {
 				return done(null, false, { message: 'Incorrect email or password.' });
 			} else {
