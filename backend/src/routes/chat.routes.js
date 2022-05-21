@@ -108,7 +108,7 @@ router.post('/', async (req, res) => {
 router.put('/', async (req, res) => {
 	const ownerId = req.user ? req.user.dataValues.id : null;
 	const { id, name, members } = req.body;
-	members.push(ownerId);
+	if (members) members.push(ownerId);
 
 	if (!ownerId) {
 		return res.status(400).json({

@@ -22,9 +22,7 @@ router.get('/', async (req, res) => {
 	if (emails) conditions.email = { [Op.in]: emails.split(',') };
 
 	try {
-		const users = await UserModel.findAll({ where: conditions });
-
-		users.forEach((user) => (user.password = undefined));
+		const users = await UserModel.findAll({ where: conditions, attributes: ['id', 'name', 'email'] });
 
 		return res.status(200).json({
 			success: true,
@@ -54,6 +52,9 @@ router.post('/register', async (req, res) => {
 
 	try {
 		const user = await UserModel.create({ name, email, password });
+
+		user.password = undefined;
+
 		return res.status(200).json({
 			success: true,
 			message: 'User created successfully',
@@ -162,6 +163,8 @@ router.put('/', async (req, res) => {
 		}
 
 		user = await user.update(fields);
+
+		user.password = undefined;
 
 		return res.status(200).json({
 			success: true,

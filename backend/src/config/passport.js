@@ -13,6 +13,7 @@ const initializePassport = () => {
 			if (!user || !(await user.validPassword(password))) {
 				return done(null, false, { message: 'Incorrect email or password.' });
 			} else {
+				user.deleted = undefined;
 				return done(null, user);
 			}
 		})
