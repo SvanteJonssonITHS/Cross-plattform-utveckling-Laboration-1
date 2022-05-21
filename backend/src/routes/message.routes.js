@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 	}
 
 	try {
-		const chat = await ChatModel.findOne({ where: { id: chatId } });
+		const chat = await ChatModel.findOne({ where: { id: chatId, deleted: false } });
 
 		if (!chat) {
 			return res.status(400).json({
@@ -64,7 +64,7 @@ router.post('/', async (req, res) => {
 	}
 
 	try {
-		const chat = await ChatModel.findOne({ where: { id: chatId } });
+		const chat = await ChatModel.findOne({ where: { id: chatId, deleted: false } });
 
 		if (!chat) {
 			return res.status(400).json({

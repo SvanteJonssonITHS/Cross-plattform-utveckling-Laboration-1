@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 	}
 
 	try {
-		const chats = await ChatModel.findAll({ where: { ownerId: id } });
+		const chats = await ChatModel.findAll({ where: { ownerId: id, deleted: false } });
 		res.status(200).json({
 			success: true,
 			message: 'Chats retrieved successfully',
@@ -135,7 +135,7 @@ router.put('/', async (req, res) => {
 	}
 
 	try {
-		let chat = await ChatModel.findByPk(id);
+		let chat = await ChatModel.findOne({ where: { id, ownerId, deleted: false } });
 
 		if (!chat) {
 			res.status(404).json({
@@ -190,7 +190,7 @@ router.delete('/', async (req, res) => {
 	}
 
 	try {
-		const chat = await ChatModel.findByPk(id);
+		const chat = await ChatModel.findOne({ where: { id, deleted: false } });
 
 		if (!chat) {
 			res.status(404).json({
@@ -199,7 +199,7 @@ router.delete('/', async (req, res) => {
 			});
 		}
 
-		await chat.destroy();
+		await chat.update({ deleted: true });
 
 		res.status(200).json({
 			success: true,

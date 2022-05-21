@@ -13,6 +13,11 @@ const chat = sequelize.define('chat', {
 	name: {
 		type: DataTypes.STRING,
 		allowNull: false
+	},
+	deleted: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false,
+		defaultValue: false
 	}
 });
 
