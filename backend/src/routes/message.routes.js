@@ -4,21 +4,15 @@ const router = express.Router();
 
 // Internal dependencies
 const { ChatModel, MessageModel, UserModel } = require('../models');
+const { authenticated } = require('../auth');
 
 /**
  * @api {get} /api/message/ Get all messages for a chat
  */
-router.get('/', async (req, res) => {
+router.get('/', authenticated, async (req, res) => {
 	const userId = req.user ? req.user.dataValues.id : null;
 	const chatId = req.query.chatId;
 	const limit = req.query.limit || 10;
-
-	if (!userId) {
-		return res.status(400).json({
-			success: false,
-			message: 'Please provide a user id'
-		});
-	}
 
 	if (!chatId) {
 		return res.status(400).json({
@@ -84,16 +78,9 @@ router.get('/', async (req, res) => {
 /**
  * @api {post} /api/message/ Create a new message
  */
-router.post('/', async (req, res) => {
+router.post('/', authenticated, async (req, res) => {
 	const userId = req.user ? req.user.dataValues.id : null;
 	const { message, chatId } = req.body;
-
-	if (!userId) {
-		return res.status(400).json({
-			success: false,
-			message: 'Please provide a user id'
-		});
-	}
 
 	if (!message || !chatId) {
 		return res.status(400).json({
@@ -151,16 +138,9 @@ router.post('/', async (req, res) => {
 /**
  * @api {put} /api/message/ Update a message
  */
-router.put('/', async (req, res) => {
+router.put('/', authenticated, async (req, res) => {
 	const userId = req.user ? req.user.dataValues.id : null;
 	const { message, id } = req.body;
-
-	if (!userId) {
-		return res.status(400).json({
-			success: false,
-			message: 'Please provide a user id'
-		});
-	}
 
 	if (!id) {
 		return res.status(400).json({
@@ -204,16 +184,9 @@ router.put('/', async (req, res) => {
 /**
  * @api {delete} /api/message/ Delete a message
  */
-router.delete('/', async (req, res) => {
+router.delete('/', authenticated, async (req, res) => {
 	const userId = req.user ? req.user.dataValues.id : null;
 	const { id } = req.body;
-
-	if (!userId) {
-		return res.status(400).json({
-			success: false,
-			message: 'Please provide a user id'
-		});
-	}
 
 	if (!id) {
 		return res.status(400).json({

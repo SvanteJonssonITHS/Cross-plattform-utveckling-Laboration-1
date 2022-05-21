@@ -5,19 +5,13 @@ const router = express.Router();
 // Internal dependencies
 const { sequelize } = require('../config/mySQL');
 const { ChatModel, UserModel } = require('../models');
+const { authenticated } = require('../auth');
 
 /**
  * @api {get} /api/chat/ Get all chats for a user
  */
-router.get('/', async (req, res) => {
+router.get('/', authenticated, async (req, res) => {
 	const id = req.user ? req.user.dataValues.id : null;
-
-	if (!id) {
-		return res.status(400).json({
-			success: false,
-			message: 'Please provide a user id'
-		});
-	}
 
 	try {
 		const chats = await ChatModel.findAll({
@@ -40,17 +34,10 @@ router.get('/', async (req, res) => {
 /**
  * @api {post} /api/chat/ Create a new chat
  */
-router.post('/', async (req, res) => {
+router.post('/', authenticated, async (req, res) => {
 	const ownerId = req.user ? req.user.dataValues.id : null;
 	const { name, members } = req.body;
-	members.push(ownerId);
-
-	if (!ownerId) {
-		return res.status(400).json({
-			success: false,
-			message: 'Please provide a user id'
-		});
-	}
+	if (members) members.push(ownerId);
 
 	if (!name) {
 		return res.status(400).json({
@@ -105,17 +92,10 @@ router.post('/', async (req, res) => {
 /**
  * @api {put} /api/chat/ Update a chat
  */
-router.put('/', async (req, res) => {
+router.put('/', authenticated, async (req, res) => {
 	const ownerId = req.user ? req.user.dataValues.id : null;
 	const { id, name, members } = req.body;
 	if (members) members.push(ownerId);
-
-	if (!ownerId) {
-		return res.status(400).json({
-			success: false,
-			message: 'Please provide a user id'
-		});
-	}
 
 	if (!id) {
 		return res.status(400).json({
@@ -176,7 +156,7 @@ router.put('/', async (req, res) => {
 /**
  * @api {delete} /api/chat/ Delete a chat
  */
-router.delete('/', async (req, res) => {
+router.delete('/', authenticated, async (req, res) => {
 	const ownerId = req.user ? req.user.dataValues.id : null;
 	const { id } = req.body;
 

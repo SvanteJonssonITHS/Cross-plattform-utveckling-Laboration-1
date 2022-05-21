@@ -6,11 +6,12 @@ const { Op } = require('sequelize');
 // Internal dependencies
 const { UserModel } = require('../models');
 const { passport } = require('../config/passport');
+const { authenticated, unauthenticated } = require('../auth');
 
 /**
  * @api {get} /api/user/ Get all users
  */
-router.get('/', async (req, res) => {
+router.get('/', authenticated, async (req, res) => {
 	const { ids, names, emails } = req.query;
 
 	const conditions = { deleted: false };
@@ -40,7 +41,7 @@ router.get('/', async (req, res) => {
 /**
  * @api {post} /api/user/register Create a new user
  */
-router.post('/register', async (req, res) => {
+router.post('/register', unauthenticated, async (req, res) => {
 	const { name, email, password } = req.body;
 
 	if (!name || !email || !password) {
@@ -83,7 +84,7 @@ router.post('/register', async (req, res) => {
 /**
  * @api {post} /api/user/login Login a user
  */
-router.post('/login', async (req, res) => {
+router.post('/login', unauthenticated, async (req, res) => {
 	passport.authenticate('local', (error, user) => {
 		if (error) {
 			return res.status(500).json({
@@ -119,7 +120,7 @@ router.post('/login', async (req, res) => {
 /**
  * @api {post} /api/user/logout Logout a user
  */
-router.post('/logout', (req, res) => {
+router.post('/logout', authenticated, (req, res) => {
 	req.logout();
 	return res.status(200).json({
 		success: true,
@@ -130,17 +131,10 @@ router.post('/logout', (req, res) => {
 /**
  * @api {put} /api/user/ Update a user
  */
-router.put('/', async (req, res) => {
+router.put('/', authenticated, async (req, res) => {
 	const id = req.user ? req.user.dataValues.id : null;
 	const { name, password } = req.body;
 	const fields = {};
-
-	if (!id) {
-		return res.status(400).json({
-			success: false,
-			message: 'Please provide a user id'
-		});
-	}
 
 	if (name) fields.name = name;
 	if (password) fields.password = password;
@@ -182,15 +176,8 @@ router.put('/', async (req, res) => {
 /**
  * @api {delete} /api/user/ Delete a user
  */
-router.delete('/', async (req, res) => {
+router.delete('/', authenticated, async (req, res) => {
 	const id = req.user ? req.user.dataValues.id : null;
-
-	if (!id) {
-		return res.status(400).json({
-			success: false,
-			message: 'Please provide a user id'
-		});
-	}
 
 	try {
 		const user = await UserModel.findOne({ where: { id, deleted: false } });
