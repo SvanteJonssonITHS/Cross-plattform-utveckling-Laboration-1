@@ -26,13 +26,13 @@ router.get('/', async (req, res) => {
 
 		users.forEach((user) => (user.password = undefined));
 
-		res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			message: 'Users retrieved successfully',
 			data: users
 		});
 	} catch (error) {
-		res.status(500).json({
+		return res.status(500).json({
 			success: false,
 			message: error.message
 		});
@@ -54,7 +54,7 @@ router.post('/register', async (req, res) => {
 
 	try {
 		const user = await UserModel.create({ name, email, password });
-		res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			message: 'User created successfully',
 			data: [user]
@@ -71,7 +71,7 @@ router.post('/register', async (req, res) => {
 				message: 'Provided email is not valid'
 			});
 		} else {
-			res.status(500).json({
+			return res.status(500).json({
 				success: false,
 				message: error
 			});
@@ -120,7 +120,7 @@ router.post('/login', async (req, res) => {
  */
 router.post('/logout', (req, res) => {
 	req.logout();
-	res.status(200).json({
+	return res.status(200).json({
 		success: true,
 		message: 'User logged out successfully'
 	});
@@ -152,10 +152,10 @@ router.put('/', async (req, res) => {
 	}
 
 	try {
-		let user = await UserModel.findByPk(id);
+		let user = await UserModel.findOne({ where: { id, deleted: false } });
 
 		if (!user) {
-			res.status(404).json({
+			return res.status(404).json({
 				success: false,
 				message: 'User not found'
 			});
@@ -163,13 +163,13 @@ router.put('/', async (req, res) => {
 
 		user = await user.update(fields);
 
-		res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			message: 'User updated successfully',
 			data: [user]
 		});
 	} catch (error) {
-		res.status(500).json({
+		return res.status(500).json({
 			success: false,
 			message: error.message
 		});
@@ -190,10 +190,10 @@ router.delete('/', async (req, res) => {
 	}
 
 	try {
-		const user = await UserModel.findByPk(id);
+		const user = await UserModel.findOne({ where: { id, deleted: false } });
 
 		if (!user) {
-			res.status(404).json({
+			return res.status(404).json({
 				success: false,
 				message: 'User not found'
 			});
@@ -201,12 +201,12 @@ router.delete('/', async (req, res) => {
 
 		await user.update({ deleted: true });
 
-		res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			message: 'User deleted successfully'
 		});
 	} catch (error) {
-		res.status(500).json({
+		return res.status(500).json({
 			success: false,
 			message: error.message
 		});

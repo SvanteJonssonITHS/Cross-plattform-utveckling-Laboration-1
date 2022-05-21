@@ -25,7 +25,7 @@ const initializePassport = () => {
 
 	// Deserialize user from the session
 	passport.deserializeUser(async (id, done) => {
-		const user = await UserModel.findByPk(id);
+		const user = await UserModel.findOne({ where: { id, deleted: false } });
 		done(null, user);
 	});
 };

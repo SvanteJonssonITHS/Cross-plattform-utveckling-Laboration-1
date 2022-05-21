@@ -3,13 +3,22 @@ const express = require('express');
 const router = express.Router();
 
 // Internal dependencies
-const { ChatModel, MessageModel } = require('../models');
+const { ChatModel, MessageModel, UserModel } = require('../models');
 
 /**
  * @api {get} /api/message/ Get all messages for a chat
  */
 router.get('/', async (req, res) => {
-	const { chatId } = req.query;
+	const userId = req.user ? req.user.dataValues.id : null;
+	const chatId = req.query.chatId;
+	const limit = req.query.limit || 10;
+
+	if (!userId) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a user id'
+		});
+	}
 
 	if (!chatId) {
 		return res.status(400).json({
@@ -19,7 +28,30 @@ router.get('/', async (req, res) => {
 	}
 
 	try {
-		const chat = await ChatModel.findOne({ where: { id: chatId, deleted: false } });
+		const chat = await ChatModel.findOne({
+			where: { id: chatId, deleted: false },
+			include: [
+				{
+					model: UserModel,
+					as: 'users',
+					attributes: ['id', 'name']
+				},
+				{
+					model: MessageModel,
+					as: 'messages',
+					attributes: ['message', 'updatedAt'],
+					limit: limit,
+					order: [['updatedAt', 'DESC']],
+					include: [
+						{
+							model: UserModel,
+							as: 'user',
+							attributes: ['id', 'name']
+						}
+					]
+				}
+			]
+		});
 
 		if (!chat) {
 			return res.status(400).json({
@@ -28,14 +60,21 @@ router.get('/', async (req, res) => {
 			});
 		}
 
-		const messages = await MessageModel.findAll({ where: { chatId, deleted: false } });
-		res.status(200).json({
+		// Check if the user is part of the chat
+		if (!chat.users.find((user) => user.id === userId)) {
+			return res.status(400).json({
+				success: false,
+				message: 'You are not part of this chat'
+			});
+		}
+
+		return res.status(200).json({
 			success: true,
 			message: 'Messages retrieved successfully',
-			data: messages
+			data: chat.messages
 		});
 	} catch (error) {
-		res.status(500).json({
+		return res.status(500).json({
 			success: false,
 			message: error.message
 		});
@@ -64,12 +103,29 @@ router.post('/', async (req, res) => {
 	}
 
 	try {
-		const chat = await ChatModel.findOne({ where: { id: chatId, deleted: false } });
+		const chat = await ChatModel.findOne({
+			where: { id: chatId, deleted: false },
+			include: [
+				{
+					model: UserModel,
+					as: 'users',
+					attributes: ['id']
+				}
+			]
+		});
 
 		if (!chat) {
 			return res.status(400).json({
 				success: false,
 				message: 'Chat not found'
+			});
+		}
+
+		// Check if the user is part of the chat
+		if (!chat.users.find((user) => user.dataValues.id === userId)) {
+			return res.status(400).json({
+				success: false,
+				message: 'You are not part of this chat'
 			});
 		}
 
@@ -79,13 +135,13 @@ router.post('/', async (req, res) => {
 			chatId
 		});
 
-		res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			message: 'Message created successfully',
 			data: [newMsg]
 		});
 	} catch (error) {
-		res.status(500).json({
+		return res.status(500).json({
 			success: false,
 			message: error
 		});
@@ -96,7 +152,15 @@ router.post('/', async (req, res) => {
  * @api {put} /api/message/ Update a message
  */
 router.put('/', async (req, res) => {
+	const userId = req.user ? req.user.dataValues.id : null;
 	const { message, id } = req.body;
+
+	if (!userId) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a user id'
+		});
+	}
 
 	if (!id) {
 		return res.status(400).json({
@@ -113,7 +177,7 @@ router.put('/', async (req, res) => {
 	}
 
 	try {
-		const messageObj = await MessageModel.findOne({ where: { id, deleted: false } });
+		const messageObj = await MessageModel.findOne({ where: { id, userId, deleted: false } });
 
 		if (!messageObj) {
 			return res.status(400).json({
@@ -124,13 +188,13 @@ router.put('/', async (req, res) => {
 
 		await messageObj.update({ message });
 
-		res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			message: 'Message updated successfully',
 			data: [messageObj]
 		});
 	} catch (error) {
-		res.status(500).json({
+		return res.status(500).json({
 			success: false,
 			message: error.message
 		});
@@ -141,7 +205,15 @@ router.put('/', async (req, res) => {
  * @api {delete} /api/message/ Delete a message
  */
 router.delete('/', async (req, res) => {
+	const userId = req.user ? req.user.dataValues.id : null;
 	const { id } = req.body;
+
+	if (!userId) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a user id'
+		});
+	}
 
 	if (!id) {
 		return res.status(400).json({
@@ -151,9 +223,9 @@ router.delete('/', async (req, res) => {
 	}
 
 	try {
-		const message = await MessageModel.findOne({ where: { id, deleted: false } });
+		const message = await MessageModel.findOne({ where: { id, userId, deleted: false } });
 		if (!message) {
-			res.status(404).json({
+			return res.status(404).json({
 				success: false,
 				message: 'Message not found'
 			});
@@ -161,12 +233,12 @@ router.delete('/', async (req, res) => {
 
 		await message.update({ deleted: true });
 
-		res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			message: 'Message deleted successfully'
 		});
 	} catch (error) {
-		res.status(500).json({
+		return res.status(500).json({
 			success: false,
 			message: error.message
 		});
