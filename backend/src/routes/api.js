@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 router.use('/chat', require('./chat.routes'));
+router.use('/message', require('./message.routes'));
 router.use('/user', require('./user.routes'));
 
 router.get('/', async (_req, res) => {
