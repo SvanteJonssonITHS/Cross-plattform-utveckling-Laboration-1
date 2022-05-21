@@ -23,6 +23,9 @@ router.get('/', async (req, res) => {
 
 	try {
 		const users = await UserModel.findAll({ where: conditions });
+
+		users.forEach((user) => (user.password = undefined));
+
 		res.status(200).json({
 			success: true,
 			message: 'Users retrieved successfully',
