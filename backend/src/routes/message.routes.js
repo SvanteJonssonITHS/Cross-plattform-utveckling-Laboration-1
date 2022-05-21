@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
 			});
 		}
 
-		const messages = await MessageModel.findAll({ where: { chatId } });
+		const messages = await MessageModel.findAll({ where: { chatId, deleted: false } });
 		res.status(200).json({
 			success: true,
 			message: 'Messages retrieved successfully',
@@ -113,7 +113,7 @@ router.put('/', async (req, res) => {
 	}
 
 	try {
-		const messageObj = await MessageModel.findOne({ where: { id } });
+		const messageObj = await MessageModel.findOne({ where: { id, deleted: false } });
 
 		if (!messageObj) {
 			return res.status(400).json({
@@ -128,6 +128,42 @@ router.put('/', async (req, res) => {
 			success: true,
 			message: 'Message updated successfully',
 			data: [messageObj]
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message
+		});
+	}
+});
+
+/**
+ * @api {delete} /api/message/ Delete a message
+ */
+router.delete('/', async (req, res) => {
+	const { id } = req.body;
+
+	if (!id) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a message id'
+		});
+	}
+
+	try {
+		const message = await MessageModel.findOne({ where: { id, deleted: false } });
+		if (!message) {
+			res.status(404).json({
+				success: false,
+				message: 'Message not found'
+			});
+		}
+
+		await message.update({ deleted: true });
+
+		res.status(200).json({
+			success: true,
+			message: 'Message deleted successfully'
 		});
 	} catch (error) {
 		res.status(500).json({
