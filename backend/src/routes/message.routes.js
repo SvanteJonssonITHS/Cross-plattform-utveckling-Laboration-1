@@ -92,4 +92,49 @@ router.post('/', async (req, res) => {
 	}
 });
 
+/**
+ * @api {put} /api/message/ Update a message
+ */
+router.put('/', async (req, res) => {
+	const { message, id } = req.body;
+
+	if (!id) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a message id'
+		});
+	}
+
+	if (!message) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a message value'
+		});
+	}
+
+	try {
+		const messageObj = await MessageModel.findOne({ where: { id } });
+
+		if (!messageObj) {
+			return res.status(400).json({
+				success: false,
+				message: 'Message not found'
+			});
+		}
+
+		await messageObj.update({ message });
+
+		res.status(200).json({
+			success: true,
+			message: 'Message updated successfully',
+			data: [messageObj]
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message
+		});
+	}
+});
+
 module.exports = router;
