@@ -42,4 +42,54 @@ router.get('/', async (req, res) => {
 	}
 });
 
+/**
+ * @api {post} /api/message/ Create a new message
+ */
+router.post('/', async (req, res) => {
+	const userId = req.user ? req.user.dataValues.id : null;
+	const { message, chatId } = req.body;
+
+	if (!userId) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide a user id'
+		});
+	}
+
+	if (!message || !chatId) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide all required fields'
+		});
+	}
+
+	try {
+		const chat = await ChatModel.findOne({ where: { id: chatId } });
+
+		if (!chat) {
+			return res.status(400).json({
+				success: false,
+				message: 'Chat not found'
+			});
+		}
+
+		const newMsg = await MessageModel.create({
+			message,
+			userId,
+			chatId
+		});
+
+		res.status(200).json({
+			success: true,
+			message: 'Message created successfully',
+			data: [newMsg]
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error
+		});
+	}
+});
+
 module.exports = router;
