@@ -1,9 +1,9 @@
 // External dependencies
 const express = require('express');
 const router = express.Router();
+const { Op } = require('sequelize');
 
 // Internal dependencies
-const { Op } = require('sequelize');
 const { UserModel } = require('../models');
 const { passport } = require('../config/passport');
 
