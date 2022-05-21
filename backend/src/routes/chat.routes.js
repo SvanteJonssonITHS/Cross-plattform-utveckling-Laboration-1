@@ -38,11 +38,10 @@ router.get('/', async (req, res) => {
  * @api {post} /api/chat/ Create a new chat
  */
 router.post('/', async (req, res) => {
-	const id = req.user ? req.user.dataValues.id : null;
-	const name = req.body.name;
-	let members = req.body.members;
+	const ownerId = req.user ? req.user.dataValues.id : null;
+	const { name, members } = req.body;
 
-	if (!id) {
+	if (!ownerId) {
 		return res.status(400).json({
 			success: false,
 			message: 'Please provide a user id'
@@ -56,20 +55,19 @@ router.post('/', async (req, res) => {
 		});
 	}
 
-	if (!members) {
+	if (!members || members.length <= 1) {
 		return res.status(400).json({
 			success: false,
 			message: 'Please provide at least one member besides the owner'
 		});
 	} else {
-		members = members.split(',');
-		members.push(id);
+		members.push(ownerId);
 	}
 
 	try {
 		const transaction = await sequelize.transaction();
 
-		const chat = await ChatModel.create({ name, ownerId: id }, { transaction });
+		const chat = await ChatModel.create({ name, ownerId }, { transaction });
 
 		// Add chat members (M:N relationship)
 		const chatUsers = await chat.addUser(
@@ -107,9 +105,7 @@ router.post('/', async (req, res) => {
  */
 router.put('/', async (req, res) => {
 	const ownerId = req.user ? req.user.dataValues.id : null;
-	const { id, name } = req.body;
-	let members = req.body.members;
-	const fields = {};
+	const { id, name, members } = req.body;
 
 	if (!id) {
 		return res.status(400).json({
@@ -118,16 +114,7 @@ router.put('/', async (req, res) => {
 		});
 	}
 
-	if (name) fields.name = name;
-	if (members) {
-		members = members.split(',');
-		members.push(ownerId);
-		if (members.length > 1) {
-			fields.members = members;
-		}
-	}
-
-	if (Object.keys(fields).length === 0) {
+	if (name || (members && members.length >= 1)) {
 		return res.status(400).json({
 			success: false,
 			message: 'Please provide at least one field to update'
@@ -144,9 +131,11 @@ router.put('/', async (req, res) => {
 			});
 		}
 
-		chat = await chat.update(fields);
+		if (name) chat = await chat.update({ name });
 
-		if (fields.members) {
+		if (members && members.length >= 1) {
+			members.push(ownerId);
+
 			const newMembers = await UserModel.findAll({
 				where: { id: members, deleted: false }
 			});
