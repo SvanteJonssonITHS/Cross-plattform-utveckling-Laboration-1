@@ -13,6 +13,11 @@ const message = sequelize.define('message', {
 	message: {
 		type: DataTypes.STRING,
 		allowNull: false
+	},
+	deleted: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false,
+		defaultValue: false
 	}
 });
 
