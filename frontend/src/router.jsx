@@ -3,7 +3,7 @@ import { StrictMode, useEffect, useState } from 'react';
 import { Switch, Route, useLocation } from 'wouter';
 
 // Internal dependencies
-import { Home, LandingPage, Register, Login } from './views';
+import { Home, LandingPage, Register, Login, PageNotFound } from './views';
 
 export default function () {
 	const [location] = useLocation();
@@ -31,7 +31,9 @@ export default function () {
 						<Login />
 					</Route>
 				)}
-				<Route>404, Not Found!</Route>
+				<Route>
+					<PageNotFound />
+				</Route>
 			</Switch>
 		</StrictMode>
 	);
