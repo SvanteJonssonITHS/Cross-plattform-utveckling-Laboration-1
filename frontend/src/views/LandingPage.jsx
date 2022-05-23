@@ -1,7 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'wouter';
 
 export default function () {
-	const navigate = useNavigate();
+	const [, setLocation] = useLocation();
 
 	return (
 		<main className="w-screen min-h-screen flex bg-gray-900 text-white">
@@ -18,7 +18,7 @@ export default function () {
 								? `/register?email=${event.target.email.value}`
 								: '/register';
 
-							navigate(redirect);
+							setLocation(redirect);
 						}}
 					>
 						<input
@@ -35,8 +35,8 @@ export default function () {
 					<span>
 						<p>
 							Already have an account?{' '}
-							<Link to="/login" className="text-green-500 font-semibold hover:underline ">
-								Login here!
+							<Link href="/login">
+								<a className="text-green-500 font-semibold hover:underline">Login here!</a>
 							</Link>
 						</p>
 					</span>

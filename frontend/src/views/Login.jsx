@@ -1,8 +1,8 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'wouter';
 
 export default function () {
-	const navigate = useNavigate();
+	const [, setLocation] = useLocation();
 
 	return (
 		<main className="flex w-screen min-h-screen bg-gray-900">
@@ -23,7 +23,7 @@ export default function () {
 						});
 						const response = await request.json();
 						if (response.success) {
-							navigate('/');
+							setLocation('/');
 						} else {
 							setErrors({ submitError: response.message });
 						}
@@ -85,8 +85,8 @@ export default function () {
 						<span>
 							<p>
 								Don&#39;t have an account?{' '}
-								<Link to="/register" className="text-green-500 font-semibold hover:underline ">
-									Register here!
+								<Link href="/register">
+									<a className="text-green-500 font-semibold hover:underline">Register here!</a>
 								</Link>
 							</p>
 						</span>

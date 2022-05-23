@@ -1,11 +1,12 @@
 // External dependencies
 import { StrictMode, useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Switch, Route, useLocation } from 'wouter';
 
 // Internal dependencies
 import { Home, LandingPage, Register, Login } from './views';
 
 export default function () {
+	const [location] = useLocation();
 	const [authenticated, setAuthenticated] = useState(false);
 
 	useEffect(() => {
@@ -14,23 +15,24 @@ export default function () {
 			const response = await request.json();
 			setAuthenticated(response.authenticated);
 		})();
-	}, []);
+	}, [location]);
 
 	return (
 		<StrictMode>
-			<BrowserRouter>
-				{authenticated ? (
-					<Routes>
-						<Route path="/" element={<Home />} />
-					</Routes>
-				) : (
-					<Routes>
-						<Route path="/" element={<LandingPage />} />
-						<Route path="/register" element={<Register />} />
-						<Route path="/login" element={<Login />} />
-					</Routes>
+			<Switch>
+				<Route path="/">{authenticated ? <Home /> : <LandingPage />}</Route>
+				{!authenticated && (
+					<Route path="/register">
+						<Register />
+					</Route>
 				)}
-			</BrowserRouter>
+				{!authenticated && (
+					<Route path="/login">
+						<Login />
+					</Route>
+				)}
+				<Route>404, Not Found!</Route>
+			</Switch>
 		</StrictMode>
 	);
 }
