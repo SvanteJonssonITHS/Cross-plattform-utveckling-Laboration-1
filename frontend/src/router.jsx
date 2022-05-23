@@ -3,7 +3,7 @@ import { StrictMode, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 // Internal dependencies
-import { Home, LandingPage, Register } from './views';
+import { Home, LandingPage, Register, Login } from './views';
 
 export default function () {
 	const [authenticated, setAuthenticated] = useState(false);
@@ -27,6 +27,7 @@ export default function () {
 					<Routes>
 						<Route path="/" element={<LandingPage />} />
 						<Route path="/register" element={<Register />} />
+						<Route path="/login" element={<Login />} />
 					</Routes>
 				)}
 			</BrowserRouter>
