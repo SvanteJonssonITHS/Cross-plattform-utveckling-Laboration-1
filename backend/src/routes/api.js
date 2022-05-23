@@ -8,10 +8,11 @@ router.use('/chat', require('./chat.routes'));
 router.use('/message', require('./message.routes'));
 router.use('/user', require('./user.routes'));
 
-router.get('/', async (_req, res) => {
+router.get('/', async (req, res) => {
 	res.status(200).json({
 		success: true,
-		message: 'Welcome to the API'
+		message: 'Welcome to the API',
+		authenticated: req.isAuthenticated()
 	});
 });
 
