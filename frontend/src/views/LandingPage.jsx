@@ -26,8 +26,9 @@ export default function () {
 							type="email"
 							placeholder="Email address"
 							className="pl-2 pr-10 py-2 rounded-md mr-2 text-black outline-none"
+							autoFocus
 						/>
-						<button className="px-7 py-2 rounded-md bg-green-500 font-semibold outline-none">
+						<button className="px-7 py-2 rounded-md bg-green-500 hover:bg-green-600 font-semibold">
 							Sign Up
 						</button>
 					</form>
