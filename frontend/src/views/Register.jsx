@@ -1,7 +1,9 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function () {
+	const navigate = useNavigate();
+
 	return (
 		<main className="flex w-screen min-h-screen bg-gray-900">
 			<Formik
@@ -23,7 +25,7 @@ export default function () {
 						});
 						const response = await request.json();
 						if (response.success) {
-							window.location.href = '/';
+							navigate(`/login${values.email ? `?email=${values.email}` : ''}`);
 						} else {
 							setErrors({ submitError: response.message });
 						}
