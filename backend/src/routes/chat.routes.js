@@ -14,10 +14,36 @@ router.get('/', authenticated, async (req, res) => {
 	const id = req.user ? req.user.dataValues.id : null;
 
 	try {
-		const chats = await ChatModel.findAll({
-			where: { ownerId: id, deleted: false },
-			include: [{ model: UserModel, as: 'users', attributes: ['id', 'name'] }]
+		let chats = await ChatModel.findAll({
+			where: { deleted: false },
+			include: [
+				{
+					model: UserModel,
+					as: 'users',
+					attributes: ['id', 'name']
+				}
+			]
 		});
+
+		if (!chats) {
+			return res.status(400).json({
+				success: false,
+				message: 'No chats found'
+			});
+		} else {
+			// check if the user is part of the chat and remove it if not
+			chats = chats.filter((chat) => {
+				return chat.users.find((user) => user.id === id);
+			});
+		}
+
+		if (!chats) {
+			return res.status(400).json({
+				success: false,
+				message: 'User is not part of any chat'
+			});
+		}
+
 		return res.status(200).json({
 			success: true,
 			message: 'Chats retrieved successfully',
