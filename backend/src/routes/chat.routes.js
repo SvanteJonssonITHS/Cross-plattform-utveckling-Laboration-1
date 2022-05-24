@@ -90,6 +90,50 @@ router.post('/', authenticated, async (req, res) => {
 });
 
 /**
+ * @api {post} /api/chat/leave Leave a chat
+ */
+router.post('/leave', authenticated, async (req, res) => {
+	const userId = req.user ? req.user.dataValues.id : null;
+	const { chatId } = req.body;
+
+	if (!chatId) {
+		return res.status(400).json({
+			success: false,
+			message: 'Please provide all required fields'
+		});
+	}
+
+	try {
+		const transaction = await sequelize.transaction();
+
+		const chat = await ChatModel.findOne({ where: { id: chatId, deleted: false } });
+
+		// Remove user from chat
+		if (chat && chat.ownerId !== userId) {
+			await chat.removeUser(userId, { transaction });
+		} else {
+			return res.status(400).json({
+				success: false,
+				message: 'You cannot leave this chat'
+			});
+		}
+
+		await transaction.commit();
+
+		return res.status(200).json({
+			success: true,
+			message: 'User removed from chat successfully',
+			data: []
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: error
+		});
+	}
+});
+
+/**
  * @api {put} /api/chat/ Update a chat
  */
 router.put('/', authenticated, async (req, res) => {
