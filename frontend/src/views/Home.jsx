@@ -52,6 +52,7 @@ export default function () {
 	`;
 
 	const [chats, setChats] = useState([]);
+	const [search, setSearch] = useState('');
 
 	useEffect(() => {
 		(async () => {
@@ -79,27 +80,28 @@ export default function () {
 					</nav>
 					<h2 className="font-semibold text-3xl mb-2">Chats</h2>
 					<div className="relative mb-2">
-						<span className="absolute inset-y-0 left-0 flex items-center pl-2">
-							<button type="submit" className="text-gray-600 focus:outline-none" tabIndex="-1">
-								<MdSearch size="1.25em" />
-							</button>
+						<span className="absolute inset-y-0 left-0 flex items-center pl-2 text-neutral-500">
+							<MdSearch size="1.25em" />
 						</span>
 						<input
 							type="search"
 							className="w-full bg-neutral-200 text-black rounded-md px-2 py-1 pl-10 focus:outline-none"
 							placeholder="Search"
 							autoComplete="off"
+							onChange={(e) => setSearch(e.target.value)}
 						/>
 					</div>
 					<ul className="flex flex-col overflow-y-scroll grow" tabIndex="-1">
 						{chats.map((chat) => (
 							<li className="mb-2" key={chat.id}>
-								<ChatCard
-									name={chat.name}
-									user={chat.messages.length > 0 ? chat.messages[0].user.name : null}
-									message={chat.messages.length > 0 ? chat.messages[0].message : null}
-									time={chat.messages.length > 0 ? chat.messages[0].updatedAt : chat.updatedAt}
-								/>
+								{chat.name && chat.name.toLowerCase().includes(search.toLowerCase()) && (
+									<ChatCard
+										name={chat.name}
+										user={chat.messages.length > 0 ? chat.messages[0].user.name : null}
+										message={chat.messages.length > 0 ? chat.messages[0].message : null}
+										time={chat.messages.length > 0 ? chat.messages[0].updatedAt : chat.updatedAt}
+									/>
+								)}
 							</li>
 						))}
 					</ul>
