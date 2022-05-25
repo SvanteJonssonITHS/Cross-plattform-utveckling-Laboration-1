@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Internal dependencies
 const { sequelize } = require('../config/mySQL');
-const { ChatModel, UserModel } = require('../models');
+const { ChatModel, UserModel, MessageModel } = require('../models');
 const { authenticated } = require('../auth');
 
 /**
@@ -21,6 +21,20 @@ router.get('/', authenticated, async (req, res) => {
 					model: UserModel,
 					as: 'users',
 					attributes: ['id', 'name']
+				},
+				{
+					model: MessageModel,
+					as: 'messages',
+					attributes: ['message', 'createdAt', 'updatedAt'],
+					limit: 1,
+					order: [['createdAt', 'DESC']],
+					include: [
+						{
+							model: UserModel,
+							as: 'user',
+							attributes: ['id', 'name']
+						}
+					]
 				}
 			]
 		});
