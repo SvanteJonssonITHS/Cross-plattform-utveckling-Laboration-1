@@ -48,13 +48,15 @@ export default (prop) => {
 					</div>
 					<div className="px-2 w-11/12">
 						<h3 className="font-semibold text-lg flex items-center">
-							<span className="w-10/12 truncate">{name}</span>
+							<span className="w-9/12 truncate" title={name}>
+								{name}
+							</span>
 							{time && (
-								<span className="text-sm font-base text-neutral-500 w-2/12 text-right">{time}</span>
+								<span className="text-sm font-base text-neutral-500 w-3/12 text-right">{time}</span>
 							)}
 						</h3>
 						{user && message && (
-							<p className="text-sm truncate">
+							<p className="text-sm truncate" title={`${user}: ${message}`}>
 								<span className="font-semibold">{user}:</span> {message}
 							</p>
 						)}
