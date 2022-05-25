@@ -1,3 +1,111 @@
+// External dependencies
+import { MdOutlinePerson, MdEditNote, MdSearch } from 'react-icons/md';
+import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
+import calendar from 'dayjs/plugin/calendar';
+dayjs.extend(calendar);
+
+// Internal dependencies
+import ChatCard from '../components/ChatCard';
+
+const calendarOptions = {
+	sameDay: 'hh:mm',
+	lastDay: 'Yesterday',
+	lastWeek: 'dddd',
+	sameElse: 'YYYY-MM-DD'
+};
+
+const getChats = async () => {
+	const request = await fetch('/api/chat');
+	const response = await request.json();
+
+	if (response.success) {
+		response.data.forEach((chat) => {
+			if (chat.messages.length > 0) {
+				chat.messages.forEach((message) => {
+					message.updatedAt = dayjs(message.createdAt).calendar(null, calendarOptions);
+				});
+			} else {
+				chat.updatedAt = dayjs(chat.updatedAt).calendar(null, calendarOptions);
+			}
+		});
+		return response.data;
+	}
+	return [];
+};
+
 export default function () {
-	return <h1 className="text-3xl font-semibold">Home</h1>;
+	const NavItem = styled.button`
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		padding: 0.5rem;
+		&:hover {
+			background-color: #e5e5e5;
+		}
+		&:focus {
+			outline: none;
+			background-color: #e5e5e5;
+		}
+	`;
+
+	const [chats, setChats] = useState([]);
+
+	useEffect(() => {
+		(async () => {
+			await setChats(await getChats());
+		})();
+	}, []);
+
+	return (
+		<div className="w-screen h-screen flex bg-gray-900">
+			<main className="m-auto w-10/12 h-5/6 bg-white flex p-2 rounded-md">
+				<section className="w-4/12 h-full pr-2 border-r-2 flex flex-col">
+					<nav className="text-blue-500">
+						<ul className="flex justify-between items-center">
+							<li>
+								<NavItem title="View profile">
+									<MdOutlinePerson size="1.5em" />
+								</NavItem>
+							</li>
+							<li>
+								<NavItem title="Create new chat">
+									<MdEditNote size="1.5em" />
+								</NavItem>
+							</li>
+						</ul>
+					</nav>
+					<h2 className="font-semibold text-3xl mb-2">Chats</h2>
+					<div className="relative mb-2">
+						<span className="absolute inset-y-0 left-0 flex items-center pl-2">
+							<button type="submit" className="text-gray-600 focus:outline-none" tabIndex="-1">
+								<MdSearch size="1.25em" />
+							</button>
+						</span>
+						<input
+							type="search"
+							className="w-full bg-neutral-200 text-black rounded-md px-2 py-1 pl-10 focus:outline-none"
+							placeholder="Search"
+							autoComplete="off"
+						/>
+					</div>
+					<ul className="flex flex-col overflow-y-scroll grow" tabIndex="-1">
+						{chats.map((chat) => (
+							<li className="mb-2" key={chat.id}>
+								<ChatCard
+									name={chat.name}
+									user={chat.messages.length > 0 ? chat.messages[0].user.name : null}
+									message={chat.messages.length > 0 ? chat.messages[0].message : null}
+									time={chat.messages.length > 0 ? chat.messages[0].updatedAt : chat.updatedAt}
+								/>
+							</li>
+						))}
+					</ul>
+				</section>
+				<section className="w-8/12">bre</section>
+			</main>
+		</div>
+	);
 }
