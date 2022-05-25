@@ -37,7 +37,7 @@ export default (prop) => {
 	return (
 		<>
 			{name && (
-				<button className="w-full h-full p-2 flex items-center hover:bg-neutral-200 focus:bg-neutral-200 focus:outline-none rounded-md text-left">
+				<button className="w-full h-full p-2 min-h-[64px] flex items-center hover:bg-neutral-200 focus:bg-neutral-200 focus:outline-none rounded-md text-left">
 					<div
 						className="w-1/12 aspect-square rounded-full flex"
 						style={{ backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})` }}
