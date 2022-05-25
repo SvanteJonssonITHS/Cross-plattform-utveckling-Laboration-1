@@ -104,6 +104,9 @@ export default function () {
 								)}
 							</li>
 						))}
+						{(chats.length === 0 ||
+							chats.filter((chat) => chat.name.toLowerCase().includes(search.toLowerCase())).length ===
+								0) && <li className="text-center text-neutral-500">No chats found</li>}
 					</ul>
 				</section>
 				<section className="w-8/12">bre</section>
