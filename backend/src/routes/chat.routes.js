@@ -25,7 +25,7 @@ router.get('/', authenticated, async (req, res) => {
 				{
 					model: MessageModel,
 					as: 'messages',
-					attributes: ['message', 'createdAt', 'updatedAt'],
+					attributes: ['message', 'userId', 'createdAt', 'updatedAt'],
 					limit: 1,
 					order: [['createdAt', 'DESC']],
 					include: [
@@ -64,6 +64,7 @@ router.get('/', authenticated, async (req, res) => {
 			data: chats
 		});
 	} catch (error) {
+		console.log(error);
 		return res.status(500).json({
 			success: false,
 			message: error.message
