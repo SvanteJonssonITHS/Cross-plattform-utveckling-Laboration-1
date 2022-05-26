@@ -61,6 +61,7 @@ export default function () {
 
 	const [chats, setChats] = useState([]);
 	const [search, setSearch] = useState('');
+	const [selectedChat, setSelectedChat] = useState(null);
 
 	useEffect(() => {
 		(async () => {
@@ -109,14 +110,16 @@ export default function () {
 										message={chat.lastMessage ? chat.lastMessage.message : null}
 										time={chat.lastMessage ? chat.lastMessage.updatedAt : chat.updatedAt}
 										onClick={async () => {
-											if (chat.messages) return;
-											const messages = await getMessages(chat.id);
-											setChats(
-												chats.map((c) => {
-													if (c.id === chat.id) c.messages = messages;
-													return c;
-												})
-											);
+											if (!chat.messages) {
+												const messages = await getMessages(chat.id);
+												setChats(
+													chats.map((c) => {
+														if (c.id === chat.id) c.messages = messages;
+														return c;
+													})
+												);
+											}
+											setSelectedChat(chat);
 										}}
 									/>
 								)}
@@ -127,7 +130,13 @@ export default function () {
 								0) && <li className="text-center text-neutral-500">No chats found</li>}
 					</ul>
 				</section>
-				<section className="w-8/12">bre</section>
+				<section className="w-8/12 h-full pl-2 flex">
+					{selectedChat ? (
+						<ChatBox chat={selectedChat} />
+					) : (
+						<p className="m-auto text-neutral-500">No chat selected</p>
+					)}
+				</section>
 			</main>
 		</div>
 	);
