@@ -5,10 +5,12 @@ export default function () {
 
 	return (
 		<main className="w-screen min-h-screen flex bg-gray-900 text-white">
-			<section className="w-1/2 flex flex-col justify-center items-center">
+			<section className="w-full md:w-1/2 p-3 flex flex-col justify-center items-center">
 				<div>
-					<h1 className="text-5xl font-bold mb-2">Texting has never been easier!</h1>
-					<p className="text-2xl text-white/[.75] mb-2">One-on-one or groups, we&#39;ve got you covered!</p>
+					<h1 className="text-3xl md:text-5xl font-bold mb-2">Texting has never been easier!</h1>
+					<p className="text-xl md:text-2xl text-white/[.75] mb-2">
+						One-on-one or groups, we&#39;ve got you covered!
+					</p>
 					<form
 						className="mb-1"
 						onSubmit={(event) => {
@@ -32,7 +34,7 @@ export default function () {
 							Sign Up
 						</button>
 					</form>
-					<span>
+					<span className="text-sm md:text-base">
 						<p>
 							Already have an account?{' '}
 							<Link href="/login">
@@ -42,7 +44,7 @@ export default function () {
 					</span>
 				</div>
 			</section>
-			<section className="w-1/2">Image here</section>
+			<section className="hidden md:block w-1/2">Image here</section>
 		</main>
 	);
 }
