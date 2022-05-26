@@ -14,7 +14,7 @@ export default function () {
 					confirmPassword: '',
 					submitError: ''
 				}}
-				onSubmit={(values, { setErrors }) => {
+				onSubmit={(values, { setErrors, setSubmitting }) => {
 					(async () => {
 						const request = await fetch('/api/user/register', {
 							method: 'POST',
@@ -29,6 +29,7 @@ export default function () {
 						} else {
 							setErrors({ submitError: response.message });
 						}
+						setSubmitting(false);
 					})();
 				}}
 				validate={(values) => {
@@ -55,7 +56,7 @@ export default function () {
 					return errors;
 				}}
 			>
-				{({ dirty, isSubmitting, isValid }) => (
+				{({ isSubmitting, isValid }) => (
 					<Form className="flex flex-col m-auto w-full min-h-screen sm:w-fit sm:min-h-fit rounded-none sm:rounded-md bg-white p-6 border-2 border-neutral-400">
 						<h2 className="text-3xl font-semibold mb-10">Sign up to start texting!</h2>
 						<label className="flex flex-col">
@@ -112,7 +113,7 @@ export default function () {
 							/>
 						</label>
 						<input
-							disabled={!dirty || isSubmitting || !isValid}
+							disabled={isSubmitting || !isValid}
 							type="submit"
 							value="Register"
 							className="px-7 py-2 mb-2 rounded-md bg-green-500 disabled:bg-green-400 hover:bg-green-600 text-white font-semibold cursor-pointer"
