@@ -8,6 +8,7 @@ dayjs.extend(calendar);
 
 // Internal dependencies
 import ChatCard from '../components/ChatCard';
+import ChatBox from '../components/ChatBox';
 
 const calendarOptions = {
 	sameDay: 'hh:mm',
@@ -28,6 +29,15 @@ const getChats = async () => {
 				chat.updatedAt = dayjs(chat.updatedAt).calendar(null, calendarOptions);
 			}
 		});
+		return response.data;
+	}
+	return [];
+};
+
+const getMessages = async (chatId) => {
+	const request = await fetch(`/api/message/?chatId=${chatId}`);
+	const response = await request.json();
+	if (response.success) {
 		return response.data;
 	}
 	return [];
@@ -98,6 +108,16 @@ export default function () {
 										user={chat.lastMessage ? chat.lastMessage.user.name : null}
 										message={chat.lastMessage ? chat.lastMessage.message : null}
 										time={chat.lastMessage ? chat.lastMessage.updatedAt : chat.updatedAt}
+										onClick={async () => {
+											if (chat.messages) return;
+											const messages = await getMessages(chat.id);
+											setChats(
+												chats.map((c) => {
+													if (c.id === chat.id) c.messages = messages;
+													return c;
+												})
+											);
+										}}
 									/>
 								)}
 							</li>
