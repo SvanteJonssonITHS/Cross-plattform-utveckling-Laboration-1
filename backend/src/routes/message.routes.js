@@ -12,7 +12,7 @@ const { authenticated } = require('../auth');
 router.get('/', authenticated, async (req, res) => {
 	const userId = req.user ? req.user.dataValues.id : null;
 	const chatId = req.query.chatId;
-	const limit = req.query.limit || 10;
+	const limit = req.query.limit || 0;
 
 	if (!chatId) {
 		return res.status(400).json({
