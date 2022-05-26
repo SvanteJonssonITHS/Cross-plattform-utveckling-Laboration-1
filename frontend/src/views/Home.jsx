@@ -11,7 +11,7 @@ import ChatCard from '../components/ChatCard';
 
 const calendarOptions = {
 	sameDay: 'hh:mm',
-	lastDay: 'Yesterday',
+	lastDay: '[Yesterday]',
 	lastWeek: 'dddd',
 	sameElse: 'YYYY-MM-DD'
 };
@@ -22,10 +22,8 @@ const getChats = async () => {
 
 	if (response.success) {
 		response.data.forEach((chat) => {
-			if (chat.messages.length > 0) {
-				chat.messages.forEach((message) => {
-					message.updatedAt = dayjs(message.createdAt).calendar(null, calendarOptions);
-				});
+			if (chat.lastMessage) {
+				chat.lastMessage.updatedAt = dayjs(chat.lastMessage.updatedAt).calendar(null, calendarOptions);
 			} else {
 				chat.updatedAt = dayjs(chat.updatedAt).calendar(null, calendarOptions);
 			}
@@ -97,9 +95,9 @@ export default function () {
 								{chat.name && chat.name.toLowerCase().includes(search.toLowerCase()) && (
 									<ChatCard
 										name={chat.name}
-										user={chat.messages.length > 0 ? chat.messages[0].user.name : null}
-										message={chat.messages.length > 0 ? chat.messages[0].message : null}
-										time={chat.messages.length > 0 ? chat.messages[0].updatedAt : chat.updatedAt}
+										user={chat.lastMessage ? chat.lastMessage.user.name : null}
+										message={chat.lastMessage ? chat.lastMessage.message : null}
+										time={chat.lastMessage ? chat.lastMessage.updatedAt : chat.updatedAt}
 									/>
 								)}
 							</li>
