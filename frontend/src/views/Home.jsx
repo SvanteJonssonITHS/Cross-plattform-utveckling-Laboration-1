@@ -7,10 +7,10 @@ import calendar from 'dayjs/plugin/calendar';
 dayjs.extend(calendar);
 
 // Internal dependencies
-import { ChatCard, UpdateUser } from '../components';
+import { ChatCard, CreateChat, UpdateUser } from '../components';
 
 const calendarOptions = {
-	sameDay: 'hh:mm',
+	sameDay: 'HH:mm',
 	lastDay: '[Yesterday]',
 	lastWeek: 'dddd',
 	sameElse: 'YYYY-MM-DD'
@@ -62,6 +62,7 @@ export default function () {
 	const [search, setSearch] = useState('');
 	const [selectedChat, setSelectedChat] = useState(null);
 	const [updateUserOpen, setUpdateUserOpen] = useState(false);
+	const [createChatOpen, setCreateChatOpen] = useState(false);
 
 	useEffect(() => {
 		(async () => {
@@ -81,7 +82,7 @@ export default function () {
 								</NavItem>
 							</li>
 							<li>
-								<NavItem title="Create new chat">
+								<NavItem title="Create new chat" onClick={() => setCreateChatOpen(true)}>
 									<MdEditNote size="1.5em" />
 								</NavItem>
 							</li>
@@ -139,6 +140,18 @@ export default function () {
 				</section>
 			</main>
 			<UpdateUser isOpen={updateUserOpen} onClose={() => setUpdateUserOpen(false)} />
+			<CreateChat
+				isOpen={createChatOpen}
+				onClose={(newChat) => {
+					setCreateChatOpen(false);
+					if (newChat) {
+						newChat.updatedAt = dayjs(newChat.updatedAt).calendar(null, calendarOptions);
+						setChats([...chats, newChat]);
+					}
+
+					console.log(chats);
+				}}
+			/>
 		</div>
 	);
 }
