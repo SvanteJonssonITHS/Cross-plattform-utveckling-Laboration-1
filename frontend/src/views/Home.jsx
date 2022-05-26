@@ -9,6 +9,7 @@ dayjs.extend(calendar);
 // Internal dependencies
 import ChatCard from '../components/ChatCard';
 import ChatBox from '../components/ChatBox';
+import UpdateUser from '../components/UpdateUser';
 
 const calendarOptions = {
 	sameDay: 'hh:mm',
@@ -62,6 +63,7 @@ export default function () {
 	const [chats, setChats] = useState([]);
 	const [search, setSearch] = useState('');
 	const [selectedChat, setSelectedChat] = useState(null);
+	const [updateUserOpen, setUpdateUserOpen] = useState(true);
 
 	useEffect(() => {
 		(async () => {
@@ -76,7 +78,7 @@ export default function () {
 					<nav className="text-blue-500">
 						<ul className="flex justify-between items-center">
 							<li>
-								<NavItem title="View profile">
+								<NavItem title="View profile" onClick={() => setUpdateUserOpen(true)}>
 									<MdOutlinePerson size="1.5em" />
 								</NavItem>
 							</li>
@@ -138,6 +140,7 @@ export default function () {
 					)}
 				</section>
 			</main>
+			<UpdateUser isOpen={updateUserOpen} onClose={() => setUpdateUserOpen(false)} />
 		</div>
 	);
 }
