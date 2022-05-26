@@ -7,9 +7,7 @@ import calendar from 'dayjs/plugin/calendar';
 dayjs.extend(calendar);
 
 // Internal dependencies
-import ChatCard from '../components/ChatCard';
-import ChatBox from '../components/ChatBox';
-import UpdateUser from '../components/UpdateUser';
+import { ChatCard, UpdateUser } from '../components';
 
 const calendarOptions = {
 	sameDay: 'hh:mm',
@@ -63,7 +61,7 @@ export default function () {
 	const [chats, setChats] = useState([]);
 	const [search, setSearch] = useState('');
 	const [selectedChat, setSelectedChat] = useState(null);
-	const [updateUserOpen, setUpdateUserOpen] = useState(true);
+	const [updateUserOpen, setUpdateUserOpen] = useState(false);
 
 	useEffect(() => {
 		(async () => {

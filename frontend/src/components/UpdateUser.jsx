@@ -5,7 +5,7 @@ import { Field, ErrorMessage, Form, Formik } from 'formik';
 
 // Internal dependencies
 import { UserContext } from '../contexts';
-import Modal from './Modal';
+import { Modal } from './';
 
 export default (prop) => {
 	const { userId } = useContext(UserContext);
