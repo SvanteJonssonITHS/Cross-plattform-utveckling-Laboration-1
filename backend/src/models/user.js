@@ -39,7 +39,9 @@ user.addHook('beforeCreate', async (user) => {
 });
 
 user.addHook('beforeUpdate', async (user) => {
-	user.password = await bcrypt.hash(user.password, 10);
+	if (user.changed('password')) {
+		user.password = await bcrypt.hash(user.password, 10);
+	}
 });
 
 user.prototype.validPassword = function (password) {
