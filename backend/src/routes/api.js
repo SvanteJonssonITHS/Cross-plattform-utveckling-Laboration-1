@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
 	res.status(200).json({
 		success: true,
 		message: 'Welcome to the API',
-		authenticated: req.isAuthenticated()
+		authenticated: req.isAuthenticated(),
+		userId: req.user ? req.user.dataValues.id : null
 	});
 });
 
