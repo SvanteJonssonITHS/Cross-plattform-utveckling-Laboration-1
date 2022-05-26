@@ -58,6 +58,13 @@ router.get('/', authenticated, async (req, res) => {
 			});
 		}
 
+		chats = chats.map((chat) => {
+			const updatedChat = chat.dataValues;
+			updatedChat.lastMessage = chat.messages[0] ? chat.messages[0].dataValues : null;
+			updatedChat.messages = null;
+			return updatedChat;
+		});
+
 		return res.status(200).json({
 			success: true,
 			message: 'Chats retrieved successfully',
