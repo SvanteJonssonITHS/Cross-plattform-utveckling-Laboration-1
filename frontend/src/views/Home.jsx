@@ -7,7 +7,7 @@ import calendar from 'dayjs/plugin/calendar';
 dayjs.extend(calendar);
 
 // Internal dependencies
-import { ChatCard, CreateChat, UpdateUser } from '../components';
+import { ChatBox, ChatCard, ConfirmAction, CreateChat, UpdateUser } from '../components';
 
 const calendarOptions = {
 	sameDay: 'HH:mm',
@@ -42,6 +42,40 @@ const getMessages = async (chatId) => {
 	return [];
 };
 
+const deleteChat = async (id) => {
+	const request = await fetch('/api/chat/', {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			id
+		})
+	});
+	const response = await request.json();
+	if (response.success) {
+		return response.data;
+	}
+	return [];
+};
+
+const leaveChat = async (chatId) => {
+	const request = await fetch('/api/chat/leave', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			chatId
+		})
+	});
+	const response = await request.json();
+	if (response.success) {
+		return response.data;
+	}
+	return [];
+};
+
 export default function () {
 	const NavItem = styled.button`
 		display: flex;
@@ -63,6 +97,8 @@ export default function () {
 	const [selectedChat, setSelectedChat] = useState(null);
 	const [updateUserOpen, setUpdateUserOpen] = useState(false);
 	const [createChatOpen, setCreateChatOpen] = useState(false);
+	const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+	const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
 
 	useEffect(() => {
 		(async () => {
@@ -133,7 +169,7 @@ export default function () {
 				</section>
 				<section className="flex h-full w-8/12 pl-2">
 					{selectedChat ? (
-						<ChatBox chat={selectedChat} />
+						<ChatBox chat={selectedChat} onDelete={() => setConfirmDeleteOpen(true)} onLeave={() => setConfirmLeaveOpen(true)} />
 					) : (
 						<p className="m-auto text-neutral-500">No chat selected</p>
 					)}
@@ -148,10 +184,20 @@ export default function () {
 						newChat.updatedAt = dayjs(newChat.updatedAt).calendar(null, calendarOptions);
 						setChats([...chats, newChat]);
 					}
-
-					console.log(chats);
 				}}
 			/>
+			<ConfirmAction isOpen={confirmDeleteOpen} onDismiss={() => setConfirmDeleteOpen(false)} onConfirm={async () => {
+				await deleteChat(selectedChat.id);
+				setChats(chats.filter((chat) => chat.id !== selectedChat.id));
+				setSelectedChat(null);
+				setConfirmDeleteOpen(false);
+			}} />
+			<ConfirmAction isOpen={confirmLeaveOpen} onDismiss={() => setConfirmLeaveOpen(false)} onConfirm={async () => {
+				await leaveChat(selectedChat.id);
+				setChats(chats.filter((chat) => chat.id !== selectedChat.id));
+				setSelectedChat(null);
+				setConfirmLeaveOpen(false);
+			}} />
 		</div>
 	);
 }
