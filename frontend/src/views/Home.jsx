@@ -71,11 +71,11 @@ export default function () {
 	}, []);
 
 	return (
-		<div className="w-screen h-screen flex bg-gray-900">
-			<main className="m-auto w-10/12 h-5/6 bg-white flex p-2 rounded-md">
-				<section className="w-4/12 h-full pr-2 border-r-2 flex flex-col">
+		<div className="flex h-screen w-screen bg-gray-900">
+			<main className="m-auto flex h-5/6 w-10/12 rounded-md bg-white p-2">
+				<section className="flex h-full w-4/12 flex-col border-r-2 pr-2">
 					<nav className="text-blue-500">
-						<ul className="flex justify-between items-center">
+						<ul className="flex items-center justify-between">
 							<li>
 								<NavItem title="View profile" onClick={() => setUpdateUserOpen(true)}>
 									<MdOutlinePerson size="1.5em" />
@@ -88,20 +88,20 @@ export default function () {
 							</li>
 						</ul>
 					</nav>
-					<h2 className="font-semibold text-3xl mb-2">Chats</h2>
+					<h2 className="mb-2 text-3xl font-semibold">Chats</h2>
 					<div className="relative mb-2">
 						<span className="absolute inset-y-0 left-0 flex items-center pl-2 text-neutral-500">
 							<MdSearch size="1.25em" />
 						</span>
 						<input
 							type="search"
-							className="w-full bg-neutral-200 text-black rounded-md px-2 py-1 pl-10 focus:outline-none"
+							className="w-full rounded-md bg-neutral-200 px-2 py-1 pl-10 text-black focus:outline-none"
 							placeholder="Search"
 							autoComplete="off"
 							onChange={(e) => setSearch(e.target.value)}
 						/>
 					</div>
-					<ul className="flex flex-col overflow-y-scroll grow" tabIndex="-1">
+					<ul className="flex grow flex-col overflow-y-scroll" tabIndex="-1">
 						{chats.map((chat) => (
 							<li className="mb-2" key={chat.id}>
 								{chat.name && chat.name.toLowerCase().includes(search.toLowerCase()) && (
@@ -131,7 +131,7 @@ export default function () {
 								0) && <li className="text-center text-neutral-500">No chats found</li>}
 					</ul>
 				</section>
-				<section className="w-8/12 h-full pl-2 flex">
+				<section className="flex h-full w-8/12 pl-2">
 					{selectedChat ? (
 						<ChatBox chat={selectedChat} />
 					) : (

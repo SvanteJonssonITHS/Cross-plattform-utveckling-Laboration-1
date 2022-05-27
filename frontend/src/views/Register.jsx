@@ -5,7 +5,7 @@ export default function () {
 	const [, setLocation] = useLocation();
 
 	return (
-		<main className="flex w-screen min-h-screen bg-gray-900">
+		<main className="flex min-h-screen w-screen bg-gray-900">
 			<Formik
 				initialValues={{
 					name: '',
@@ -57,29 +57,29 @@ export default function () {
 				}}
 			>
 				{({ isSubmitting, isValid }) => (
-					<Form className="flex flex-col m-auto w-full min-h-screen sm:w-fit sm:min-h-fit rounded-none sm:rounded-md bg-white p-6 border-2 border-neutral-400">
-						<h2 className="text-3xl font-semibold mb-10">Sign up to start texting!</h2>
+					<Form className="m-auto flex min-h-screen w-full flex-col rounded-none border-2 border-neutral-400 bg-white p-6 sm:min-h-fit sm:w-fit sm:rounded-md">
+						<h2 className="mb-10 text-3xl font-semibold">Sign up to start texting!</h2>
 						<label className="flex flex-col">
 							<p>
 								<span>Name </span>
-								<ErrorMessage component="span" name="name" className="text-red-500 text-sm italic" />
+								<ErrorMessage component="span" name="name" className="text-sm italic text-red-500" />
 							</p>
 							<Field
 								name="name"
 								type="text"
-								className="rounded-md border-2 border-neutral-400 mb-5 p-1"
+								className="mb-5 rounded-md border-2 border-neutral-400 p-1"
 								autoFocus
 							/>
 						</label>
 						<label className="flex flex-col">
 							<p>
 								<span>Email </span>
-								<ErrorMessage component="span" name="email" className="text-red-500 text-sm italic" />
+								<ErrorMessage component="span" name="email" className="text-sm italic text-red-500" />
 							</p>
 							<Field
 								name="email"
 								type="email"
-								className="rounded-md border-2 border-neutral-400 mb-5 p-1"
+								className="mb-5 rounded-md border-2 border-neutral-400 p-1"
 							/>
 						</label>
 						<label className="flex flex-col">
@@ -88,13 +88,13 @@ export default function () {
 								<ErrorMessage
 									component="span"
 									name="password"
-									className="text-red-500 text-sm italic"
+									className="text-sm italic text-red-500"
 								/>
 							</p>
 							<Field
 								name="password"
 								type="password"
-								className="rounded-md border-2 border-neutral-400 mb-5 p-1"
+								className="mb-5 rounded-md border-2 border-neutral-400 p-1"
 							/>
 						</label>
 						<label className="flex flex-col">
@@ -103,27 +103,27 @@ export default function () {
 								<ErrorMessage
 									component="span"
 									name="confirmPassword"
-									className="text-red-500 text-sm italic"
+									className="text-sm italic text-red-500"
 								/>
 							</p>
 							<Field
 								name="confirmPassword"
 								type="password"
-								className="rounded-md border-2 border-neutral-400 mb-5 p-1"
+								className="mb-5 rounded-md border-2 border-neutral-400 p-1"
 							/>
 						</label>
 						<input
 							disabled={isSubmitting || !isValid}
 							type="submit"
 							value="Register"
-							className="px-7 py-2 mb-2 rounded-md bg-green-500 disabled:bg-green-400 hover:bg-green-600 text-white font-semibold cursor-pointer"
+							className="mb-2 cursor-pointer rounded-md bg-green-500 px-7 py-2 font-semibold text-white hover:bg-green-600 disabled:bg-green-400"
 						/>
-						<ErrorMessage component="span" name="submitError" className="text-red-500 italic mb-2" />
+						<ErrorMessage component="span" name="submitError" className="mb-2 italic text-red-500" />
 						<span>
 							<p>
 								Already have an account?{' '}
 								<Link href="/login">
-									<a className="text-green-500 font-semibold hover:underline">Login here!</a>
+									<a className="font-semibold text-green-500 hover:underline">Login here!</a>
 								</Link>
 							</p>
 						</span>

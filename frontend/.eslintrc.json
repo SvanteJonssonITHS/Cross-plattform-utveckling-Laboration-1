@@ -3,7 +3,7 @@
 		"browser": true,
 		"node": true
 	},
-	"extends": ["eslint:recommended", "plugin:react/recommended"],
+	"extends": ["eslint:recommended", "plugin:react/recommended", "plugin:tailwindcss/recommended"],
 	"parserOptions": {
 		"ecmaVersion": 2020,
 		"sourceType": "module"
@@ -11,6 +11,9 @@
 	"settings": {
 		"react": {
 			"version": "detect"
+		},
+		"tailwindcss": {
+			"officialSorting": true
 		}
 	},
 	"rules": {

@@ -38,28 +38,26 @@ export default (prop) => {
 		<>
 			{name && (
 				<button
-					className="w-full h-full p-2 min-h-[64px] flex items-center hover:bg-neutral-200 focus:bg-neutral-200 focus:outline-none rounded-md text-left"
+					className="flex h-full min-h-[64px] w-full items-center rounded-md p-2 text-left hover:bg-neutral-200 focus:bg-neutral-200 focus:outline-none"
 					onClick={prop.onClick}
 				>
 					<div
-						className="w-1/12 aspect-square rounded-full flex"
+						className="flex aspect-square w-1/12 rounded-full"
 						style={{ backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})` }}
 					>
-						<p className="m-auto font-semibold text-lg" style={{ color: textColor }}>
+						<p className="m-auto text-lg font-semibold" style={{ color: textColor }}>
 							{name.charAt(0)}
 						</p>
 					</div>
-					<div className="px-2 w-11/12">
-						<h3 className="font-semibold text-lg flex items-center">
+					<div className="w-11/12 px-2">
+						<h3 className="flex items-center text-lg font-semibold">
 							<span className="w-9/12 truncate" title={name}>
 								{name}
 							</span>
-							{time && (
-								<span className="text-sm font-base text-neutral-500 w-3/12 text-right">{time}</span>
-							)}
+							{time && <span className="w-3/12 text-right text-sm text-neutral-500">{time}</span>}
 						</h3>
 						{user && message && (
-							<p className="text-sm truncate" title={`${user}: ${message}`}>
+							<p className="truncate text-sm" title={`${user}: ${message}`}>
 								<span className="font-semibold">{user}:</span> {message}
 							</p>
 						)}

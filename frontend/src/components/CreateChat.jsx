@@ -24,7 +24,7 @@ export default (prop) => {
 							} else {
 								return {
 									value: user.id,
-									label: user.email
+									label: `${user.name} (${user.email})`
 								};
 							}
 						})
@@ -77,24 +77,24 @@ export default (prop) => {
 				}}
 			>
 				{({ isSubmitting, isValid, setFieldValue }) => (
-					<Form className="flex flex-col m-auto w-full min-h-screen sm:w-8/12 md:w-6/12 lg:w-4/12 sm:min-h-fit rounded-none sm:rounded-md bg-white p-6 border-2 border-neutral-400">
-						<h2 className="text-3xl font-semibold mb-10">New chat</h2>
+					<Form className="m-auto flex min-h-screen w-full flex-col rounded-none border-2 border-neutral-400 bg-white p-6 sm:min-h-fit sm:w-8/12 sm:rounded-md md:w-6/12 lg:w-4/12">
+						<h2 className="mb-10 text-3xl font-semibold">New chat</h2>
 						<label className="flex flex-col">
 							<p>
 								<span>Name </span>
-								<ErrorMessage component="span" name="name" className="text-red-500 text-sm italic" />
+								<ErrorMessage component="span" name="name" className="text-sm italic text-red-500" />
 							</p>
 							<Field
 								name="name"
 								type="text"
-								className="rounded-md border-2 border-neutral-400 mb-5 p-1"
+								className="mb-5 rounded-md border-2 border-neutral-400 p-1"
 								autoFocus
 							/>
 						</label>
 						<label className="flex flex-col">
 							<p>
 								<span>Members </span>
-								<ErrorMessage component="span" name="members" className="text-red-500 text-sm italic" />
+								<ErrorMessage component="span" name="members" className="text-sm italic text-red-500" />
 							</p>
 							<Field
 								name="members"
@@ -107,7 +107,7 @@ export default (prop) => {
 										values.map((value) => value.value)
 									);
 								}}
-								className="rounded-md border-2 border-neutral-400 mb-10"
+								className="mb-10 rounded-md border-2 border-neutral-400"
 								styles={{
 									control: () => ({
 										border: 'none',
@@ -123,13 +123,13 @@ export default (prop) => {
 								}}
 								type="button"
 								value="Close"
-								className="text-black w-5/12 py-2 mb-2 rounded-md bg-neutral-200 hover:bg-neutral-300 font-semibold cursor-pointer"
+								className="mb-2 w-5/12 cursor-pointer rounded-md bg-neutral-200 py-2 font-semibold text-black hover:bg-neutral-300"
 							/>
 							<input
 								disabled={isSubmitting || !isValid}
 								type="submit"
 								value="Update profile"
-								className="w-5/12 py-2 mb-2 rounded-md bg-green-500 disabled:bg-green-400 hover:bg-green-600 text-white font-semibold cursor-pointer"
+								className="mb-2 w-5/12 cursor-pointer rounded-md bg-green-500 py-2 font-semibold text-white hover:bg-green-600 disabled:bg-green-400"
 							/>
 						</section>
 					</Form>

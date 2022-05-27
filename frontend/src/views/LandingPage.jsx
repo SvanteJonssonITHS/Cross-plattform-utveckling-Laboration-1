@@ -4,11 +4,11 @@ export default function () {
 	const [, setLocation] = useLocation();
 
 	return (
-		<main className="w-screen min-h-screen flex bg-gray-900 text-white">
-			<section className="w-full md:w-1/2 p-3 flex flex-col justify-center items-center">
+		<main className="flex min-h-screen w-screen bg-gray-900 text-white">
+			<section className="flex w-full flex-col items-center justify-center p-3 md:w-1/2">
 				<div>
-					<h1 className="text-3xl md:text-5xl font-bold mb-2">Texting has never been easier!</h1>
-					<p className="text-xl md:text-2xl text-white/[.75] mb-2">
+					<h1 className="mb-2 text-3xl font-bold md:text-5xl">Texting has never been easier!</h1>
+					<p className="mb-2 text-xl text-white/[.75] md:text-2xl">
 						One-on-one or groups, we&#39;ve got you covered!
 					</p>
 					<form
@@ -27,10 +27,10 @@ export default function () {
 							name="email"
 							type="email"
 							placeholder="Email address"
-							className="pl-2 pr-10 py-2 rounded-md mr-2 text-black outline-none"
+							className="mr-2 rounded-md py-2 pl-2 pr-10 text-black outline-none"
 							autoFocus
 						/>
-						<button className="px-7 py-2 rounded-md bg-green-500 hover:bg-green-600 font-semibold">
+						<button className="rounded-md bg-green-500 px-7 py-2 font-semibold hover:bg-green-600">
 							Sign Up
 						</button>
 					</form>
@@ -38,13 +38,13 @@ export default function () {
 						<p>
 							Already have an account?{' '}
 							<Link href="/login">
-								<a className="text-green-500 font-semibold hover:underline">Login here!</a>
+								<a className="font-semibold text-green-500 hover:underline">Login here!</a>
 							</Link>
 						</p>
 					</span>
 				</div>
 			</section>
-			<section className="hidden md:block w-1/2">Image here</section>
+			<section className="hidden w-1/2 md:block">Image here</section>
 		</main>
 	);
 }
