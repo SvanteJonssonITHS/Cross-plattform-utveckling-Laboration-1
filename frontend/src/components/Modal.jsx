@@ -15,7 +15,7 @@ export default (prop) => {
 
 	return (
 		<div
-			className="absolute grid h-screen w-screen items-center overflow-y-scroll bg-black/[.5]"
+			className="fixed grid h-screen w-screen items-center overflow-y-scroll bg-black/[.5]"
 			onClick={(event) => closeModal(event, prop.onClose)}
 		>
 			{prop.children}
