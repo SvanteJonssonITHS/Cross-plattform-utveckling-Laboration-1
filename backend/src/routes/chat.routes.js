@@ -1,6 +1,7 @@
 // External dependencies
 const express = require('express');
 const router = express.Router();
+const { Op } = require('sequelize');
 
 // Internal dependencies
 const { sequelize } = require('../config/mySQL');
@@ -12,10 +13,15 @@ const { authenticated } = require('../auth');
  */
 router.get('/', authenticated, async (req, res) => {
 	const id = req.user ? req.user.dataValues.id : null;
+	const { ids } = req.query;
+
+	const conditions = { deleted: false };
+
+	if (ids) conditions.id = { [Op.in]: ids.split(',') };
 
 	try {
 		let chats = await ChatModel.findAll({
-			where: { deleted: false },
+			where: conditions,
 			include: [
 				{
 					model: UserModel,
