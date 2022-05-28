@@ -170,7 +170,12 @@ export default function () {
 				</section>
 				<section className="flex h-full w-8/12 pl-2">
 					{selectedChat ? (
-						<ChatBox chat={selectedChat} onDelete={() => setConfirmDeleteOpen(true)} onLeave={() => setConfirmLeaveOpen(true)} onEdit={() => setUpdateChatOpen(true)} />
+						<ChatBox
+							chat={selectedChat}
+							onDelete={() => setConfirmDeleteOpen(true)}
+							onLeave={() => setConfirmLeaveOpen(true)}
+							onEdit={() => setUpdateChatOpen(true)}
+						/>
 					) : (
 						<p className="m-auto text-neutral-500">No chat selected</p>
 					)}
@@ -187,25 +192,37 @@ export default function () {
 					}
 				}}
 			/>
-			<UpdateChat isOpen={updateChatOpen} onClose={(updatedChat) => {
-				setUpdateChatOpen(false);
-				if (updatedChat) {
-					updatedChat.updatedAt = dayjs(updatedChat.updatedAt).calendar(null, calendarOptions);
-					setChats(chats.map((chat) => (chat.id === updatedChat.id ? updatedChat : chat)));
-				}
-			}} chatId={selectedChat ? selectedChat.id : null}/>
-			<ConfirmAction isOpen={confirmDeleteOpen} onDismiss={() => setConfirmDeleteOpen(false)} onConfirm={async () => {
-				await deleteChat(selectedChat.id);
-				setChats(chats.filter((chat) => chat.id !== selectedChat.id));
-				setSelectedChat(null);
-				setConfirmDeleteOpen(false);
-			}} />
-			<ConfirmAction isOpen={confirmLeaveOpen} onDismiss={() => setConfirmLeaveOpen(false)} onConfirm={async () => {
-				await leaveChat(selectedChat.id);
-				setChats(chats.filter((chat) => chat.id !== selectedChat.id));
-				setSelectedChat(null);
-				setConfirmLeaveOpen(false);
-			}} />
+			<UpdateChat
+				isOpen={updateChatOpen}
+				onClose={(updatedChat) => {
+					setUpdateChatOpen(false);
+					if (updatedChat) {
+						updatedChat.updatedAt = dayjs(updatedChat.updatedAt).calendar(null, calendarOptions);
+						setChats(chats.map((chat) => (chat.id === updatedChat.id ? updatedChat : chat)));
+					}
+				}}
+				chatId={selectedChat ? selectedChat.id : null}
+			/>
+			<ConfirmAction
+				isOpen={confirmDeleteOpen}
+				onDismiss={() => setConfirmDeleteOpen(false)}
+				onConfirm={async () => {
+					await deleteChat(selectedChat.id);
+					setChats(chats.filter((chat) => chat.id !== selectedChat.id));
+					setSelectedChat(null);
+					setConfirmDeleteOpen(false);
+				}}
+			/>
+			<ConfirmAction
+				isOpen={confirmLeaveOpen}
+				onDismiss={() => setConfirmLeaveOpen(false)}
+				onConfirm={async () => {
+					await leaveChat(selectedChat.id);
+					setChats(chats.filter((chat) => chat.id !== selectedChat.id));
+					setSelectedChat(null);
+					setConfirmLeaveOpen(false);
+				}}
+			/>
 		</div>
 	);
 }

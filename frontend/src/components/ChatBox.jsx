@@ -43,26 +43,33 @@ export default (prop) => {
 
 							{showDropdown && (
 								<ul className="absolute right-0 z-50 w-40 rounded-md bg-neutral-200">
-								{userId === prop.chat.ownerId && (
-									<li>
-										<button className="flex w-full items-center rounded-md py-1 px-2 font-medium text-black hover:bg-neutral-300" onClick={() => prop.onEdit()}>
-											<MdEdit className="mr-2" />
-											Edit
-										</button>
-									</li>
-								)}
+									{userId === prop.chat.ownerId && (
+										<li>
+											<button
+												className="flex w-full items-center rounded-md py-1 px-2 font-medium text-black hover:bg-neutral-300"
+												onClick={() => prop.onEdit()}
+											>
+												<MdEdit className="mr-2" />
+												Edit
+											</button>
+										</li>
+									)}
 									{userId === prop.chat.ownerId ? (
 										<li>
-											<button className="flex w-full items-center rounded-md py-1 px-2 font-medium text-red-500 hover:bg-neutral-300" 
-											onClick={() => prop.onDelete()}>
+											<button
+												className="flex w-full items-center rounded-md py-1 px-2 font-medium text-red-500 hover:bg-neutral-300"
+												onClick={() => prop.onDelete()}
+											>
 												<MdDelete className="mr-2" />
 												Delete
 											</button>
 										</li>
 									) : (
 										<li>
-											<button className="flex w-full items-center rounded-md py-1 px-2 font-medium text-red-500 hover:bg-neutral-300"
-											onClick={() => prop.onLeave()}>
+											<button
+												className="flex w-full items-center rounded-md py-1 px-2 font-medium text-red-500 hover:bg-neutral-300"
+												onClick={() => prop.onLeave()}
+											>
 												<MdLogout className="mr-2" />
 												Leave
 											</button>

@@ -8,69 +8,73 @@ import { Modal } from './';
 import { UserContext } from '../contexts';
 
 const getChat = async (id) => {
-    const request = await fetch(`/api/chat/?ids=${id}`);
-    const response = await request.json();
-    if (response.success) {
-        return response.data[0];
-    } else {
-        return null;
-    }
+	const request = await fetch(`/api/chat/?ids=${id}`);
+	const response = await request.json();
+	if (response.success) {
+		return response.data[0];
+	} else {
+		return null;
+	}
 };
 
 const getUsers = async () => {
-    const request = await fetch(`/api/user/`);
-    const response = await request.json();
-    if (response.success) {
-        return response.data;
-    } else {
-        return [];
-    }
-}
+	const request = await fetch(`/api/user/`);
+	const response = await request.json();
+	if (response.success) {
+		return response.data;
+	} else {
+		return [];
+	}
+};
 
 export default (prop) => {
 	const { userId } = useContext(UserContext);
 	const [chat, setChat] = useState([]);
-    const [users, setUsers] = useState([]);
+	const [users, setUsers] = useState([]);
 
 	useEffect(() => {
 		(async () => {
 			const chat = await getChat(prop.chatId);
-            if(chat) {
-                setChat(chat);
-            } else {
-                prop.onClose();
-            }
+			if (chat) {
+				setChat(chat);
+			} else {
+				prop.onClose();
+			}
 
-            const users = await getUsers();
-            if(users && chat) {
-                setUsers(users.map((user) => {
+			const users = await getUsers();
+			if (users && chat) {
+				setUsers(
+					users
+						.map((user) => {
 							if (user.id === userId) return null;
-                            const member = { value: user.id, label: `${user.name} (${user.email})` };
-                            chat.users.forEach((chatUser) => {
-                                if(chatUser.id === user.id) {
-                                    member.isSelected = true;
-                                }
-                            });
-                            return member;
-						}).filter((user) => user !== null));
-            } else {
-                prop.onClose();
-            }
+							const member = { value: user.id, label: `${user.name} (${user.email})` };
+							chat.users.forEach((chatUser) => {
+								if (chatUser.id === user.id) {
+									member.isSelected = true;
+								}
+							});
+							return member;
+						})
+						.filter((user) => user !== null)
+				);
+			} else {
+				prop.onClose();
+			}
 		})();
 	}, [prop.isOpen]);
 
 	return (
 		<Modal isOpen={prop.isOpen} onClose={prop.onClose}>
 			<Formik
-                enableReinitialize={true} 
+				enableReinitialize={true}
 				initialValues={{
-                    id: prop.chatId,
+					id: prop.chatId,
 					name: chat.name,
 					members: users.filter((user) => user.isSelected),
 					submitError: ''
 				}}
 				onSubmit={(values, { setErrors, setSubmitting }) => {
-                    values.members = values.members.map((user) => user.value);
+					values.members = values.members.map((user) => user.value);
 					(async () => {
 						const request = await fetch('/api/chat/', {
 							method: 'PUT',
@@ -127,7 +131,7 @@ export default (prop) => {
 								component={Select}
 								isMulti={true}
 								options={users}
-                                value={users.filter((user) => user.isSelected)}
+								value={users.filter((user) => user.isSelected)}
 								onChange={(values) => {
 									setFieldValue(
 										'members',
