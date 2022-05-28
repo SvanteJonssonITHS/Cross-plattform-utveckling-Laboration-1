@@ -3,6 +3,7 @@ require('dotenv').config();
 
 // External dependencies
 const express = require('express');
+const http = require('http');
 const session = require('express-session');
 const history = require('connect-history-api-fallback');
 const path = require('path');
@@ -11,6 +12,7 @@ const path = require('path');
 const { passport, initializePassport } = require('./config/passport');
 const { sequelize, connectToMySQL } = require('./config/mySQL');
 const establishAssociations = require('./config/associations');
+const { socketIOSetup } = require('./config/socketio');
 
 // Variable declaration
 const app = express();
@@ -36,7 +38,7 @@ app.use((err, _req, res, _next) => {
 });
 
 // Routes
-app.use('/api', require('./routes/api.js'));
+app.use('/api', require('./routes/api.http.js'));
 
 // Serve static files from the React app
 app.use(history());
@@ -59,8 +61,12 @@ app.use('/', express.static(path.join(path.resolve(), '../frontend/dist')));
 		// Initialize passport
 		initializePassport();
 
+		// Connects to SocketIO
+		const server = http.createServer(app);
+		socketIOSetup(server);
+
 		// Start the server
-		app.listen(port, () => {
+		server.listen(port, () => {
 			console.log(`Server is running on port ${port}\nAccess it on http://localhost:${port}`);
 		});
 	} catch (error) {
