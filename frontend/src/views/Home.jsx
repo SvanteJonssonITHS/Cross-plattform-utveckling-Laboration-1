@@ -7,7 +7,7 @@ import calendar from 'dayjs/plugin/calendar';
 dayjs.extend(calendar);
 
 // Internal dependencies
-import { ChatBox, ChatCard, ConfirmAction, CreateChat, UpdateUser } from '../components';
+import { ChatBox, ChatCard, ConfirmAction, CreateChat, UpdateChat, UpdateUser } from '../components';
 
 const calendarOptions = {
 	sameDay: 'HH:mm',
@@ -97,6 +97,7 @@ export default function () {
 	const [selectedChat, setSelectedChat] = useState(null);
 	const [updateUserOpen, setUpdateUserOpen] = useState(false);
 	const [createChatOpen, setCreateChatOpen] = useState(false);
+	const [updateChatOpen, setUpdateChatOpen] = useState(false);
 	const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 	const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
 
@@ -169,7 +170,7 @@ export default function () {
 				</section>
 				<section className="flex h-full w-8/12 pl-2">
 					{selectedChat ? (
-						<ChatBox chat={selectedChat} onDelete={() => setConfirmDeleteOpen(true)} onLeave={() => setConfirmLeaveOpen(true)} />
+						<ChatBox chat={selectedChat} onDelete={() => setConfirmDeleteOpen(true)} onLeave={() => setConfirmLeaveOpen(true)} onEdit={() => setUpdateChatOpen(true)} />
 					) : (
 						<p className="m-auto text-neutral-500">No chat selected</p>
 					)}
@@ -186,6 +187,13 @@ export default function () {
 					}
 				}}
 			/>
+			<UpdateChat isOpen={updateChatOpen} onClose={(updatedChat) => {
+				setUpdateChatOpen(false);
+				if (updatedChat) {
+					updatedChat.updatedAt = dayjs(updatedChat.updatedAt).calendar(null, calendarOptions);
+					setChats(chats.map((chat) => (chat.id === updatedChat.id ? updatedChat : chat)));
+				}
+			}} chatId={selectedChat ? selectedChat.id : null}/>
 			<ConfirmAction isOpen={confirmDeleteOpen} onDismiss={() => setConfirmDeleteOpen(false)} onConfirm={async () => {
 				await deleteChat(selectedChat.id);
 				setChats(chats.filter((chat) => chat.id !== selectedChat.id));
