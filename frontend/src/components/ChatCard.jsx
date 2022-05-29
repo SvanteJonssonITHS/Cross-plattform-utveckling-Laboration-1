@@ -26,12 +26,15 @@ export default (prop) => {
 	const time = prop.time || null;
 
 	const [color, setColor] = useState([163, 163, 163]);
-	const [textColor, setTextColor] = useState('white');
+	const [textColor, setTextColor] = useState('black');
 
 	useEffect(() => {
-		setColor(prop.name.toRGB());
-		const brightness = Math.round((color[0] * 299 + color[1] * 587 + color[2] * 114) / 1000);
-		setTextColor(brightness > 125 ? 'black' : 'white');
+		let rgb = name.toRGB();
+		if(rgb) {
+			const brightness = Math.round((rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000);
+			setTextColor(brightness > 125 ? 'black' : 'white');
+			setColor(rgb);
+		}
 	}, []);
 
 	return (
