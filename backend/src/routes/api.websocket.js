@@ -1,5 +1,5 @@
 // Dependencies
-const { ChatModel, MessageModel } = require('../models');
+const { ChatModel, UserModel, MessageModel } = require('../models');
 
 // Variable declaration
 let socketIO;
@@ -15,13 +15,24 @@ exports.websocketRoutes = (io) => {
 
 			if (!chat) return;
 
-			const newMessage = await MessageModel.create({
+			let newMessage = await MessageModel.create({
 				chatId,
 				userId,
 				message
 			});
 
 			if (!newMessage) return;
+
+			newMessage = await MessageModel.findOne({
+				where: { id: newMessage.id, deleted: false },
+				include: [
+					{
+						model: UserModel,
+						as: 'user',
+						attributes: ['id', 'name']
+					}
+				]
+			});
 
 			socket.emit(`chat-${chatId}`, newMessage);
 		});
