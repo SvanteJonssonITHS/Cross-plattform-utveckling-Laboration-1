@@ -33,7 +33,7 @@ router.get('/', authenticated, async (req, res) => {
 				{
 					model: MessageModel,
 					as: 'messages',
-					attributes: ['message', 'createdAt', 'updatedAt'],
+					attributes: ['id', 'message', 'createdAt', 'updatedAt'],
 					limit: parseInt(limit),
 					order: [['createdAt', 'DESC']],
 					include: [
