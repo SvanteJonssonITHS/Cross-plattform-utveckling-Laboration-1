@@ -80,7 +80,6 @@ const formatDate = (date) => {
 });
 };
 
-export default function () {
 	const NavItem = styled.button`
 		display: flex;
 		align-items: center;
@@ -96,6 +95,7 @@ export default function () {
 		}
 	`;
 
+export default function () {
 	const [chats, setChats] = useState(null);
 	const [search, setSearch] = useState('');
 	const [selectedChat, setSelectedChat] = useState(null);
@@ -112,7 +112,9 @@ export default function () {
 				chats.forEach((chat) => {
 					socket.on(`chat-${chat.id}`, async (newMessage) => {
 						if (!newMessage) return;
-						chat.lastMessage = newMessage.dataValues;
+						chat.lastMessage = newMessage;
+						if(chat.messages && !chat.messages.includes(newMessage)) chat.messages.push(newMessage)
+						if(selectedChat && chat.id === selectedChat.id) setSelectedChat(chat);
 						setChats([...chats]);
 					});
 				});
@@ -190,6 +192,7 @@ export default function () {
 							onDelete={() => setConfirmDeleteOpen(true)}
 							onLeave={() => setConfirmLeaveOpen(true)}
 							onEdit={() => setUpdateChatOpen(true)}
+							onSend={(message, userId) => socket.emit(`message`, selectedChat.id, { message: message, userId: userId })}
 						/>
 					) : (
 						<p className="m-auto text-neutral-500">No chat selected</p>
