@@ -110,13 +110,12 @@ export default function () {
 			setChats(await getChats());
 		})();
 		if (chats) {
-			console.log(chats);
 			chats.forEach((chat) => {
 				socket.on(`chat-${chat.id}`, (newMessage) => {
 					if (!newMessage) return;
 					chat.lastMessage = JSON.parse(JSON.stringify(newMessage));
 					chat.lastMessage.updatedAt = formatDate(chat.lastMessage.updatedAt);
-					if(chat.messages && !chat.messages.includes(newMessage)) chat.messages.push(newMessage);
+					if (chat.messages && !chat.messages.includes(newMessage)) chat.messages.push(newMessage);
 					if (chat.id === selectedChat.id) setSelectedChat(chat);
 					setChats([...chats]);
 				});

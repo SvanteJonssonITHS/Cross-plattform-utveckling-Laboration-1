@@ -69,7 +69,7 @@ export default (prop) => {
 				enableReinitialize={true}
 				initialValues={{
 					id: prop.chatId,
-					name: chat.name,
+					name: chat.name || '',
 					members: users.filter((user) => user.isSelected),
 					submitError: ''
 				}}
