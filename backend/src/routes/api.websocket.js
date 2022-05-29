@@ -34,7 +34,7 @@ exports.websocketRoutes = (io) => {
 				]
 			});
 
-			socket.emit(`chat-${chatId}`, newMessage);
+			socketIO.emit(`chat-${chatId}`, newMessage);
 		});
 	});
 };
