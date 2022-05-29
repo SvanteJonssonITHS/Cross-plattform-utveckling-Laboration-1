@@ -2,6 +2,8 @@
 import { MdOutlinePerson, MdEditNote, MdSearch } from 'react-icons/md';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
+const socket = io();
 import dayjs from 'dayjs';
 import calendar from 'dayjs/plugin/calendar';
 dayjs.extend(calendar);
@@ -30,7 +32,7 @@ const getChats = async () => {
 		});
 		return response.data;
 	}
-	return [];
+	return null;
 };
 
 const getMessages = async (chatId) => {
@@ -92,7 +94,7 @@ export default function () {
 		}
 	`;
 
-	const [chats, setChats] = useState([]);
+	const [chats, setChats] = useState(null);
 	const [search, setSearch] = useState('');
 	const [selectedChat, setSelectedChat] = useState(null);
 	const [updateUserOpen, setUpdateUserOpen] = useState(false);
@@ -103,9 +105,18 @@ export default function () {
 
 	useEffect(() => {
 		(async () => {
-			await setChats(await getChats());
+			if (!chats) setChats(await getChats());
+			else {
+				chats.forEach((chat) => {
+					socket.on(`chat-${chat.id}`, async (newMessage) => {
+						if (!newMessage) return;
+						chat.lastMessage = newMessage.dataValues;
+						setChats([...chats]);
+					});
+				});
+			}
 		})();
-	}, []);
+	}, [chats]);
 
 	return (
 		<div className="flex h-screen w-screen bg-gray-900">
@@ -139,33 +150,35 @@ export default function () {
 						/>
 					</div>
 					<ul className="flex grow flex-col overflow-y-scroll" tabIndex="-1">
-						{chats.map((chat) => (
-							<li className="mb-2" key={chat.id}>
-								{chat.name && chat.name.toLowerCase().includes(search.toLowerCase()) && (
-									<ChatCard
-										name={chat.name}
-										user={chat.lastMessage ? chat.lastMessage.user.name : null}
-										message={chat.lastMessage ? chat.lastMessage.message : null}
-										time={chat.lastMessage ? chat.lastMessage.updatedAt : chat.updatedAt}
-										onClick={async () => {
-											if (!chat.messages) {
-												const messages = await getMessages(chat.id);
-												setChats(
-													chats.map((c) => {
-														if (c.id === chat.id) c.messages = messages;
-														return c;
-													})
-												);
-											}
-											setSelectedChat(chat);
-										}}
-									/>
-								)}
-							</li>
-						))}
-						{(chats.length === 0 ||
-							chats.filter((chat) => chat.name.toLowerCase().includes(search.toLowerCase())).length ===
-								0) && <li className="text-center text-neutral-500">No chats found</li>}
+						{chats &&
+							chats.map((chat) => (
+								<li className="mb-2" key={chat.id}>
+									{chat.name && chat.name.toLowerCase().includes(search.toLowerCase()) && (
+										<ChatCard
+											name={chat.name}
+											user={chat.lastMessage ? chat.lastMessage.user.name : null}
+											message={chat.lastMessage ? chat.lastMessage.message : null}
+											time={chat.lastMessage ? chat.lastMessage.updatedAt : chat.updatedAt}
+											onClick={async () => {
+												if (!chat.messages) {
+													const messages = await getMessages(chat.id);
+													setChats(
+														chats.map((c) => {
+															if (c.id === chat.id) c.messages = messages;
+															return c;
+														})
+													);
+												}
+												setSelectedChat(chat);
+											}}
+										/>
+									)}
+								</li>
+							))}
+						{((chats && chats.length === 0) ||
+							(chats &&
+								chats.filter((chat) => chat.name.toLowerCase().includes(search.toLowerCase()))
+									.length === 0)) && <li className="text-center text-neutral-500">No chats found</li>}
 					</ul>
 				</section>
 				<section className="flex h-full w-8/12 pl-2">
