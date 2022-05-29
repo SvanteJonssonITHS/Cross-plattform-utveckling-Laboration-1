@@ -9,6 +9,8 @@ exports.websocketRoutes = (io) => {
 
 	socketIO.on('connection', (socket) => {
 		socket.on('message', async (chatId, { userId, message }) => {
+			if (!message || !userId) return;
+
 			const chat = await ChatModel.findOne({
 				where: { id: chatId, deleted: false }
 			});
