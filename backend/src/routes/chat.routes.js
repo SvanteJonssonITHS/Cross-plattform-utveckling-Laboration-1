@@ -77,7 +77,6 @@ router.get('/', authenticated, async (req, res) => {
 			data: chats
 		});
 	} catch (error) {
-		console.log(error);
 		return res.status(500).json({
 			success: false,
 			message: error.message
