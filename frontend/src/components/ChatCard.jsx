@@ -30,7 +30,7 @@ export default (prop) => {
 
 	useEffect(() => {
 		let rgb = name.toRGB();
-		if(rgb) {
+		if (rgb) {
 			const brightness = Math.round((rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000);
 			setTextColor(brightness > 125 ? 'black' : 'white');
 			setColor(rgb);

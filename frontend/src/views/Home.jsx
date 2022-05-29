@@ -18,9 +18,9 @@ const getChats = async () => {
 	if (response.success) {
 		response.data.forEach((chat) => {
 			if (chat.lastMessage) {
-				chat.lastMessage.updatedAt = formatDate(chat.lastMessage.updatedAt)
+				chat.lastMessage.updatedAt = formatDate(chat.lastMessage.updatedAt);
 			} else {
-				chat.updatedAt = formatDate(chat.updatedAt)
+				chat.updatedAt = formatDate(chat.updatedAt);
 			}
 		});
 		return response.data;
@@ -73,27 +73,27 @@ const leaveChat = async (chatId) => {
 
 const formatDate = (date) => {
 	return dayjs(date).calendar(null, {
-	sameDay: 'HH:mm',
-	lastDay: '[Yesterday]',
-	lastWeek: 'dddd',
-	sameElse: 'YYYY-MM-DD'
-});
+		sameDay: 'HH:mm',
+		lastDay: '[Yesterday]',
+		lastWeek: 'dddd',
+		sameElse: 'YYYY-MM-DD'
+	});
 };
 
-	const NavItem = styled.button`
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 50%;
-		padding: 0.5rem;
-		&:hover {
-			background-color: #e5e5e5;
-		}
-		&:focus {
-			outline: none;
-			background-color: #e5e5e5;
-		}
-	`;
+const NavItem = styled.button`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	padding: 0.5rem;
+	&:hover {
+		background-color: #e5e5e5;
+	}
+	&:focus {
+		outline: none;
+		background-color: #e5e5e5;
+	}
+`;
 
 export default function () {
 	const [chats, setChats] = useState(null);
@@ -107,20 +107,22 @@ export default function () {
 
 	useEffect(() => {
 		(async () => {
-			if (!chats) setChats(await getChats());
-			else {
-				chats.forEach((chat) => {
-					socket.on(`chat-${chat.id}`, async (newMessage) => {
-						if (!newMessage) return;
-						chat.lastMessage = newMessage;
-						if(chat.messages && !chat.messages.includes(newMessage)) chat.messages.push(newMessage)
-						if(selectedChat && chat.id === selectedChat.id) setSelectedChat(chat);
-						setChats([...chats]);
-					});
-				});
-			}
+			setChats(await getChats());
 		})();
-	}, [chats]);
+		if (chats) {
+			console.log(chats);
+			chats.forEach((chat) => {
+				socket.on(`chat-${chat.id}`, (newMessage) => {
+					if (!newMessage) return;
+					chat.lastMessage = JSON.parse(JSON.stringify(newMessage));
+					chat.lastMessage.updatedAt = formatDate(chat.lastMessage.updatedAt);
+					if(chat.messages && !chat.messages.includes(newMessage)) chat.messages.push(newMessage);
+					if (chat.id === selectedChat.id) setSelectedChat(chat);
+					setChats([...chats]);
+				});
+			});
+		}
+	}, [selectedChat]);
 
 	return (
 		<div className="flex h-screen w-screen bg-gray-900">
@@ -192,7 +194,9 @@ export default function () {
 							onDelete={() => setConfirmDeleteOpen(true)}
 							onLeave={() => setConfirmLeaveOpen(true)}
 							onEdit={() => setUpdateChatOpen(true)}
-							onSend={(message, userId) => socket.emit(`message`, selectedChat.id, { message: message, userId: userId })}
+							onSend={(message, userId) =>
+								socket.emit(`message`, selectedChat.id, { message: message, userId: userId })
+							}
 						/>
 					) : (
 						<p className="m-auto text-neutral-500">No chat selected</p>
@@ -205,7 +209,7 @@ export default function () {
 				onClose={(newChat) => {
 					setCreateChatOpen(false);
 					if (newChat) {
-						newChat.updatedAt = formatDate(newChat.updatedAt)
+						newChat.updatedAt = formatDate(newChat.updatedAt);
 						setChats([...chats, newChat]);
 					}
 				}}
@@ -215,7 +219,7 @@ export default function () {
 				onClose={(updatedChat) => {
 					setUpdateChatOpen(false);
 					if (updatedChat) {
-						updatedChat.updatedAt = formatDate(updatedChat.updatedAt)
+						updatedChat.updatedAt = formatDate(updatedChat.updatedAt);
 						setChats(chats.map((chat) => (chat.id === updatedChat.id ? updatedChat : chat)));
 					}
 				}}
