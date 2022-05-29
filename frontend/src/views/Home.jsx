@@ -11,13 +11,6 @@ dayjs.extend(calendar);
 // Internal dependencies
 import { ChatBox, ChatCard, ConfirmAction, CreateChat, UpdateChat, UpdateUser } from '../components';
 
-const calendarOptions = {
-	sameDay: 'HH:mm',
-	lastDay: '[Yesterday]',
-	lastWeek: 'dddd',
-	sameElse: 'YYYY-MM-DD'
-};
-
 const getChats = async () => {
 	const request = await fetch('/api/chat');
 	const response = await request.json();
@@ -25,9 +18,9 @@ const getChats = async () => {
 	if (response.success) {
 		response.data.forEach((chat) => {
 			if (chat.lastMessage) {
-				chat.lastMessage.updatedAt = dayjs(chat.lastMessage.updatedAt).calendar(null, calendarOptions);
+				chat.lastMessage.updatedAt = formatDate(chat.lastMessage.updatedAt)
 			} else {
-				chat.updatedAt = dayjs(chat.updatedAt).calendar(null, calendarOptions);
+				chat.updatedAt = formatDate(chat.updatedAt)
 			}
 		});
 		return response.data;
@@ -76,6 +69,15 @@ const leaveChat = async (chatId) => {
 		return response.data;
 	}
 	return [];
+};
+
+const formatDate = (date) => {
+	return dayjs(date).calendar(null, {
+	sameDay: 'HH:mm',
+	lastDay: '[Yesterday]',
+	lastWeek: 'dddd',
+	sameElse: 'YYYY-MM-DD'
+});
 };
 
 export default function () {
@@ -200,7 +202,7 @@ export default function () {
 				onClose={(newChat) => {
 					setCreateChatOpen(false);
 					if (newChat) {
-						newChat.updatedAt = dayjs(newChat.updatedAt).calendar(null, calendarOptions);
+						newChat.updatedAt = formatDate(newChat.updatedAt)
 						setChats([...chats, newChat]);
 					}
 				}}
@@ -210,7 +212,7 @@ export default function () {
 				onClose={(updatedChat) => {
 					setUpdateChatOpen(false);
 					if (updatedChat) {
-						updatedChat.updatedAt = dayjs(updatedChat.updatedAt).calendar(null, calendarOptions);
+						updatedChat.updatedAt = formatDate(updatedChat.updatedAt)
 						setChats(chats.map((chat) => (chat.id === updatedChat.id ? updatedChat : chat)));
 					}
 				}}
