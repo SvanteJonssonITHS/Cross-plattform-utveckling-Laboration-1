@@ -38,7 +38,7 @@ const NavItem = styled.button`
 
 export default (prop) => {
 	const { userId } = useContext(UserContext);
-	const name = prop.chat.name || null;
+	const [name, setName] = useState(prop.chat.name || '');
 	const [messages, setMessages] = useState(prop.chat.messages || []);
 	const [showDropdown, setShowDropdown] = useState(false);
 	const chatEndElement = useRef(null);
@@ -47,10 +47,11 @@ export default (prop) => {
 	const setFocus = () => inputElement.current.focus();
 
 	useEffect(() => {
+		setName(prop.chat.name);
 		setMessages(prop.chat.messages);
-		scrollToBottom();
-		setFocus();
-	}, [prop, messages]);
+		if (chatEndElement.current) scrollToBottom();
+		if (chatEndElement.current) setFocus();
+	}, [prop, name, messages]);
 
 	return (
 		<section className="flex h-full w-full flex-col">
@@ -71,7 +72,10 @@ export default (prop) => {
 										<li>
 											<button
 												className="flex w-full items-center rounded-md py-1 px-2 font-medium text-black hover:bg-neutral-300"
-												onClick={() => prop.onEdit()}
+												onClick={() => {
+													prop.onEdit();
+													setShowDropdown(false);
+												}}
 											>
 												<MdEdit className="mr-2" />
 												Edit
@@ -82,7 +86,10 @@ export default (prop) => {
 										<li>
 											<button
 												className="flex w-full items-center rounded-md py-1 px-2 font-medium text-red-500 hover:bg-neutral-300"
-												onClick={() => prop.onDelete()}
+												onClick={() => {
+													prop.onDelete();
+													setShowDropdown(false);
+												}}
 											>
 												<MdDelete className="mr-2" />
 												Delete

@@ -220,6 +220,11 @@ export default function () {
 					if (updatedChat) {
 						updatedChat.updatedAt = formatDate(updatedChat.updatedAt);
 						setChats(chats.map((chat) => (chat.id === updatedChat.id ? updatedChat : chat)));
+						if (selectedChat.id === updatedChat.id) {
+							updatedChat.lastMessage = selectedChat.lastMessage;
+							if (selectedChat.messages) updatedChat.messages = [...selectedChat.messages];
+							setSelectedChat(updatedChat);
+						}
 					}
 				}}
 				chatId={selectedChat ? selectedChat.id : null}
