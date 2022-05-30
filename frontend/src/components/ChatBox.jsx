@@ -12,7 +12,7 @@ import { UserContext } from '../contexts';
 const formatDate = (date) => {
 	return dayjs(date).calendar(null, {
 		sameDay: 'HH:mm',
-		lastDay: '[Yesterday]',
+		lastDay: '[Yesterday] HH:mm',
 		lastWeek: 'dddd',
 		sameElse: 'YYYY-MM-DD'
 	});
@@ -135,9 +135,9 @@ export default (prop) => {
 							{index - 1 >= 0 &&
 							message.user.id == messages[index - 1].user.id &&
 							dateDiff(message.updatedAt, messages[index - 1].updatedAt) < 1 ? null : (
-								<span className="pt-1 text-xs text-neutral-500">
-									{message.user.name + ' ' + formatDate(message.updatedAt)}
-								</span>
+								<p className="py-1 text-xs text-neutral-500">
+								<span className='font-semibold'>{message.user.name}</span>{' '}<span>{formatDate(message.updatedAt)}</span>
+								</p>
 							)}
 							<p
 								className={`w-fit max-w-lg break-words rounded-md px-2 py-1 ${
