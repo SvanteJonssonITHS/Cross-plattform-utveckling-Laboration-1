@@ -1,40 +1,10 @@
 // External dependencies
 import { useEffect, useState, useContext, useRef } from 'react';
 import { MdMoreVert, MdEdit, MdLogout, MdDelete, MdSend, MdArrowBack } from 'react-icons/md';
-import styled from 'styled-components';
-import dayjs from 'dayjs';
-import calendar from 'dayjs/plugin/calendar';
-dayjs.extend(calendar);
 
 // Internal dependencies
 import { UserContext } from '../contexts';
-
-const formatDate = (date) => {
-	return dayjs(date).calendar(null, {
-		sameDay: 'HH:mm',
-		lastDay: '[Yesterday] HH:mm',
-		lastWeek: 'dddd',
-		sameElse: 'YYYY-MM-DD'
-	});
-};
-
-const dateDiff = (date, otherDate) => dayjs(dayjs(date).format()).diff(dayjs(otherDate).format(), 'hour');
-
-const NavItem = styled.button`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 50%;
-	padding: 0.5rem;
-	margin-bottom: 0.5rem;
-	&:hover {
-		background-color: #e5e5e5;
-	}
-	&:focus {
-		outline: none;
-		background-color: #e5e5e5;
-	}
-`;
+import { formatDate, dateDiff, NavItem } from '../misc';
 
 export default (prop) => {
 	const { userId } = useContext(UserContext);
@@ -136,8 +106,10 @@ export default (prop) => {
 							message.user.id == messages[index - 1].user.id &&
 							dateDiff(message.updatedAt, messages[index - 1].updatedAt) < 1 ? null : (
 								<p className="py-1 text-xs text-neutral-500">
-									{message.user.id != userId && <span className="font-semibold">{message.user.name + ' '}</span>}
-									<span>{formatDate(message.updatedAt)}</span>
+									{message.user.id != userId && (
+										<span className="font-semibold">{message.user.name + ' '}</span>
+									)}
+									<span>{formatDate(message.updatedAt, { lastDay: '[Yesterday] HH:mm' })}</span>
 								</p>
 							)}
 							<p

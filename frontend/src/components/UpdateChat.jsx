@@ -6,26 +6,7 @@ import Select from 'react-select';
 // Internal dependencies
 import { Modal } from './';
 import { UserContext } from '../contexts';
-
-const getChat = async (id) => {
-	const request = await fetch(`/api/chat/?ids=${id}`);
-	const response = await request.json();
-	if (response.success) {
-		return response.data[0];
-	} else {
-		return null;
-	}
-};
-
-const getUsers = async () => {
-	const request = await fetch(`/api/user/`);
-	const response = await request.json();
-	if (response.success) {
-		return response.data;
-	} else {
-		return [];
-	}
-};
+import { getChat, getUsers } from '../misc';
 
 export default (prop) => {
 	const { userId } = useContext(UserContext);

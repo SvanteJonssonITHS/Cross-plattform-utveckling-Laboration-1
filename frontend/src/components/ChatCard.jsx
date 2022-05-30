@@ -1,3 +1,4 @@
+// Dependencies
 import { useEffect, useState } from 'react';
 
 String.prototype.toRGB = function () {

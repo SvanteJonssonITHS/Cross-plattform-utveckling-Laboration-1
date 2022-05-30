@@ -1,3 +1,4 @@
+// Dependencies
 import { useEffect } from 'react';
 
 const closeModal = (event, onClose) => {
