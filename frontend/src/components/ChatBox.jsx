@@ -1,6 +1,6 @@
 // External dependencies
 import { useEffect, useState, useContext, useRef } from 'react';
-import { MdMoreVert, MdEdit, MdLogout, MdDelete, MdSend } from 'react-icons/md';
+import { MdMoreVert, MdEdit, MdLogout, MdDelete, MdSend, MdArrowBack } from 'react-icons/md';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 import calendar from 'dayjs/plugin/calendar';
@@ -57,12 +57,19 @@ export default (prop) => {
 		<section className="flex h-full w-full flex-col">
 			<nav className="w-full">
 				<ul className="flex w-full items-center justify-between">
-					<li className="w-1/2">
+					<li className="flex w-1/2 items-center">
+						<NavItem
+							onClick={() => prop.onBack()}
+							style={{ marginBottom: '0', marginRight: '0.5rem' }}
+							title="Go back"
+						>
+							<MdArrowBack size="1.5em" className="text-blue-500" />
+						</NavItem>
 						<h2 className="truncate text-lg font-semibold">{name}</h2>
 					</li>
 					<li>
 						<div className="relative">
-							<NavItem onClick={() => setShowDropdown(!showDropdown)}>
+							<NavItem onClick={() => setShowDropdown(!showDropdown)} title="View options">
 								<MdMoreVert size="1.5em" className="text-blue-500" />
 							</NavItem>
 
@@ -76,6 +83,7 @@ export default (prop) => {
 													prop.onEdit();
 													setShowDropdown(false);
 												}}
+												title="Edit chat"
 											>
 												<MdEdit className="mr-2" />
 												Edit
@@ -90,6 +98,7 @@ export default (prop) => {
 													prop.onDelete();
 													setShowDropdown(false);
 												}}
+												title="Delete chat"
 											>
 												<MdDelete className="mr-2" />
 												Delete
@@ -100,6 +109,7 @@ export default (prop) => {
 											<button
 												className="flex w-full items-center rounded-md py-1 px-2 font-medium text-red-500 hover:bg-neutral-300"
 												onClick={() => prop.onLeave()}
+												title="Leave chat"
 											>
 												<MdLogout className="mr-2" />
 												Leave

@@ -45,7 +45,7 @@ export default (prop) => {
 					onClick={prop.onClick}
 				>
 					<div
-						className="flex aspect-square w-1/12 rounded-full"
+						className="flex aspect-square w-10 rounded-full"
 						style={{ backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})` }}
 					>
 						<p className="m-auto text-lg font-semibold" style={{ color: textColor }}>

@@ -91,7 +91,9 @@ const formatDate = (date) => {
 
 const sortChats = (chat, otherChat) => {
 	const chatDate = chat.lastMessage ? new Date(chat.lastMessage.updatedAt) : new Date(chat.updatedAt);
-	const otherChatDate = otherChat.lastMessage ? new Date(otherChat.lastMessage.updatedAt) : new Date(otherChat.updatedAt);
+	const otherChatDate = otherChat.lastMessage
+		? new Date(otherChat.lastMessage.updatedAt)
+		: new Date(otherChat.updatedAt);
 	return chatDate - otherChatDate;
 };
 
@@ -128,8 +130,12 @@ export default function () {
 
 	return (
 		<div className="flex h-screen w-screen bg-gray-900">
-			<main className="m-auto flex h-5/6 w-10/12 rounded-md bg-white p-2">
-				<section className="flex h-full w-4/12 flex-col border-r-2 pr-2">
+			<main className="m-auto flex h-screen w-full rounded-none bg-white p-2 lg:h-5/6 lg:w-10/12 lg:rounded-md">
+				<section
+					className={`flex h-full w-full flex-col border-r-2 pr-2 sm:w-1/2 md:w-5/12 lg:w-4/12 ${
+						selectedChat ? 'hidden sm:flex' : 'flex'
+					}`}
+				>
 					<nav className="text-blue-500">
 						<ul className="flex items-center justify-between">
 							<li>
@@ -189,13 +195,18 @@ export default function () {
 									.length === 0)) && <li className="text-center text-neutral-500">No chats found</li>}
 					</ul>
 				</section>
-				<section className="flex h-full w-8/12 pl-2">
+				<section
+					className={`h-full w-full pl-2 sm:w-1/2 md:w-7/12 lg:w-8/12 ${
+						selectedChat ? 'flex' : 'hidden sm:flex'
+					}`}
+				>
 					{selectedChat ? (
 						<ChatBox
 							chat={selectedChat}
 							onDelete={() => setConfirmDeleteOpen(true)}
 							onLeave={() => setConfirmLeaveOpen(true)}
 							onEdit={() => setUpdateChatOpen(true)}
+							onBack={() => setSelectedChat(null)}
 							onSend={(message, userId) =>
 								socket.emit(`message`, selectedChat.id, { message: message, userId: userId })
 							}
