@@ -45,6 +45,7 @@ export default (prop) => {
 					submitError: ''
 				}}
 				onSubmit={(values, { setErrors, setSubmitting }) => {
+					values.members = values.members.map((user) => user.value);
 					(async () => {
 						const request = await fetch('/api/chat/', {
 							method: 'POST',
@@ -57,7 +58,7 @@ export default (prop) => {
 						if (response.success) {
 							prop.onClose(response.data[0]);
 						} else {
-							setErrors({ submitError: 'Update unsuccessful' });
+							setErrors({ submitError: response.message });
 						}
 						setSubmitting(false);
 					})();
@@ -101,12 +102,7 @@ export default (prop) => {
 								component={Select}
 								isMulti={true}
 								options={users}
-								onChange={(values) => {
-									setFieldValue(
-										'members',
-										values.map((value) => value.value)
-									);
-								}}
+								onChange={(value) => setFieldValue('members', value)}
 								className="mb-10 rounded-md border-2 border-neutral-400"
 								styles={{
 									control: () => ({
@@ -128,10 +124,11 @@ export default (prop) => {
 							<input
 								disabled={isSubmitting || !isValid}
 								type="submit"
-								value="Update profile"
+								value="Create"
 								className="mb-2 w-5/12 cursor-pointer rounded-md bg-green-500 py-2 font-semibold text-white hover:bg-green-600 disabled:bg-green-400"
 							/>
 						</section>
+						<ErrorMessage component="span" name="submitError" className="mb-2 italic text-red-500" />
 					</Form>
 				)}
 			</Formik>
