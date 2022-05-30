@@ -136,7 +136,8 @@ export default (prop) => {
 							message.user.id == messages[index - 1].user.id &&
 							dateDiff(message.updatedAt, messages[index - 1].updatedAt) < 1 ? null : (
 								<p className="py-1 text-xs text-neutral-500">
-								<span className='font-semibold'>{message.user.name}</span>{' '}<span>{formatDate(message.updatedAt)}</span>
+									{message.user.id != userId && <span className="font-semibold">{message.user.name + ' '}</span>}
+									<span>{formatDate(message.updatedAt)}</span>
 								</p>
 							)}
 							<p
