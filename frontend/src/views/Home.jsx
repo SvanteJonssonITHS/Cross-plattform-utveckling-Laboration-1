@@ -11,17 +11,26 @@ dayjs.extend(calendar);
 // Internal dependencies
 import { ChatBox, ChatCard, ConfirmAction, CreateChat, UpdateChat, UpdateUser } from '../components';
 
-const getChats = async () => {
+const getChats = async (setChats) => {
 	const request = await fetch('/api/chat');
 	const response = await request.json();
 
 	if (response.success) {
+		response.data.sort((first, second) => sortChats(second, first));
 		response.data.forEach((chat) => {
 			if (chat.lastMessage) {
-				chat.lastMessage.updatedAt = formatDate(chat.lastMessage.updatedAt);
+				chat.lastMessage.displayDate = formatDate(chat.lastMessage.updatedAt);
 			} else {
-				chat.updatedAt = formatDate(chat.updatedAt);
+				chat.displayDate = formatDate(chat.updatedAt);
 			}
+			// Connect to socket
+			socket.on(`chat-${chat.id}`, (newMessage) => {
+				if (!newMessage) return;
+				chat.lastMessage = JSON.parse(JSON.stringify(newMessage));
+				chat.lastMessage.displayDate = formatDate(chat.lastMessage.updatedAt);
+				if (chat.messages && !chat.messages.includes(newMessage)) chat.messages.push(newMessage);
+				setChats((chats) => [...chats.sort((first, second) => sortChats(second, first))]);
+			});
 		});
 		return response.data;
 	}
@@ -80,6 +89,12 @@ const formatDate = (date) => {
 	});
 };
 
+const sortChats = (chat, otherChat) => {
+	const chatDate = chat.lastMessage ? new Date(chat.lastMessage.updatedAt) : new Date(chat.updatedAt);
+	const otherChatDate = otherChat.lastMessage ? new Date(otherChat.lastMessage.updatedAt) : new Date(otherChat.updatedAt);
+	return chatDate - otherChatDate;
+};
+
 const NavItem = styled.button`
 	display: flex;
 	align-items: center;
@@ -107,21 +122,9 @@ export default function () {
 
 	useEffect(() => {
 		(async () => {
-			setChats(await getChats());
+			setChats(await getChats(setChats));
 		})();
-		if (chats) {
-			chats.forEach((chat) => {
-				socket.on(`chat-${chat.id}`, (newMessage) => {
-					if (!newMessage) return;
-					chat.lastMessage = JSON.parse(JSON.stringify(newMessage));
-					chat.lastMessage.updatedAt = formatDate(chat.lastMessage.updatedAt);
-					if (chat.messages && !chat.messages.includes(newMessage)) chat.messages.push(newMessage);
-					if (chat.id === selectedChat.id) setSelectedChat(chat);
-					setChats([...chats]);
-				});
-			});
-		}
-	}, [selectedChat]);
+	}, []);
 
 	return (
 		<div className="flex h-screen w-screen bg-gray-900">
@@ -163,7 +166,7 @@ export default function () {
 											name={chat.name}
 											user={chat.lastMessage ? chat.lastMessage.user.name : null}
 											message={chat.lastMessage ? chat.lastMessage.message : null}
-											time={chat.lastMessage ? chat.lastMessage.updatedAt : chat.updatedAt}
+											time={chat.lastMessage ? chat.lastMessage.displayDate : chat.displayDate}
 											onClick={async () => {
 												if (!chat.messages) {
 													const messages = await getMessages(chat.id);
@@ -208,8 +211,8 @@ export default function () {
 				onClose={(newChat) => {
 					setCreateChatOpen(false);
 					if (newChat) {
-						newChat.updatedAt = formatDate(newChat.updatedAt);
-						setChats([...chats, newChat]);
+						newChat.displayDate = formatDate(newChat.updatedAt);
+						setChats([newChat, ...chats]);
 					}
 				}}
 			/>
@@ -218,7 +221,7 @@ export default function () {
 				onClose={(updatedChat) => {
 					setUpdateChatOpen(false);
 					if (updatedChat) {
-						updatedChat.updatedAt = formatDate(updatedChat.updatedAt);
+						updatedChat.displayDate = formatDate(updatedChat.updatedAt);
 						setChats(chats.map((chat) => (chat.id === updatedChat.id ? updatedChat : chat)));
 						if (selectedChat.id === updatedChat.id) {
 							updatedChat.lastMessage = selectedChat.lastMessage;
