@@ -106,7 +106,7 @@ export default (prop) => {
 					return errors;
 				}}
 			>
-				{({ isSubmitting, isValid, setFieldValue }) => (
+				{({ isSubmitting, isValid, setFieldValue, values }) => (
 					<Form className="m-auto flex min-h-screen w-full flex-col rounded-none border-2 border-neutral-400 bg-white p-6 sm:min-h-fit sm:w-8/12 sm:rounded-md md:w-6/12 lg:w-4/12">
 						<h2 className="mb-10 text-3xl font-semibold">Update chat</h2>
 						<label className="flex flex-col">
@@ -131,13 +131,8 @@ export default (prop) => {
 								component={Select}
 								isMulti={true}
 								options={users}
-								value={users.filter((user) => user.isSelected)}
-								onChange={(values) => {
-									setFieldValue(
-										'members',
-										values.map((value) => value.value)
-									);
-								}}
+								value={values.members}
+								onChange={(value) => setFieldValue('members', value)}
 								className="mb-10 rounded-md border-2 border-neutral-400"
 								styles={{
 									control: () => ({
