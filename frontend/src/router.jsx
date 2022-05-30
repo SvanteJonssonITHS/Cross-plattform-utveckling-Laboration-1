@@ -20,32 +20,39 @@ export default function () {
 		})();
 	}, [location]);
 
-	return (
-		<StrictMode>
-			<Switch>
-				<Route path="/">
-					{authenticated ? (
+	if (authenticated) {
+		return (
+			<StrictMode>
+				<Switch>
+					<Route path="/">
 						<UserContext.Provider value={{ userId }}>
 							<Home />
 						</UserContext.Provider>
-					) : (
+					</Route>
+					<Route>
+						<PageNotFound />
+					</Route>
+				</Switch>
+			</StrictMode>
+		);
+	} else {
+		return (
+			<StrictMode>
+				<Switch>
+					<Route path="/">
 						<LandingPage />
-					)}
-				</Route>
-				{!authenticated && (
+					</Route>
 					<Route path="/register">
 						<Register />
 					</Route>
-				)}
-				{!authenticated && (
 					<Route path="/login">
 						<Login />
 					</Route>
-				)}
-				<Route>
-					<PageNotFound />
-				</Route>
-			</Switch>
-		</StrictMode>
-	);
+					<Route>
+						<PageNotFound />
+					</Route>
+				</Switch>
+			</StrictMode>
+		);
+	}
 }
