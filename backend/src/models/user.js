@@ -1,6 +1,6 @@
 // External dependencies
 const { DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Internal dependencies
 const { sequelize } = require('../config/mySQL');
