@@ -4,7 +4,16 @@ import { MdOutlinePerson, MdEditNote, MdSearch } from 'react-icons/md';
 
 // Internal dependencies
 import { ChatBox, ChatCard, ConfirmAction, CreateChat, UpdateChat, UpdateUser } from '../components';
-import { getChats, getMessages, deleteChat, leaveChat, formatDate, emitMessage, NavItem } from '../misc/';
+import {
+	getChats,
+	getMessages,
+	deleteChat,
+	leaveChat,
+	connectToSocket,
+	formatDate,
+	emitMessage,
+	NavItem
+} from '../misc/';
 
 export default function () {
 	const [chats, setChats] = useState(null);
@@ -111,10 +120,11 @@ export default function () {
 			<UpdateUser isOpen={updateUserOpen} onClose={() => setUpdateUserOpen(false)} />
 			<CreateChat
 				isOpen={createChatOpen}
-				onClose={(newChat) => {
+				onClose={async (newChat) => {
 					setCreateChatOpen(false);
 					if (newChat) {
 						newChat.displayDate = formatDate(newChat.updatedAt);
+						connectToSocket(newChat, setChats, chats, true);
 						setChats([newChat, ...chats]);
 					}
 				}}

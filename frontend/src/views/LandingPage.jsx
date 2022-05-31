@@ -29,6 +29,7 @@ export default function () {
 							placeholder="Email address"
 							className="mr-2 rounded-md py-2 pl-2 pr-10 text-black outline-none"
 							autoFocus
+							maxLength="50"
 						/>
 						<button className="rounded-md bg-green-500 px-7 py-2 font-semibold hover:bg-green-600">
 							Sign Up

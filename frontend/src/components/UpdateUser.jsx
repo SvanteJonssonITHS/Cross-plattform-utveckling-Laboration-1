@@ -109,6 +109,7 @@ export default (prop) => {
 											className="w-full rounded-md bg-neutral-200 px-2 py-1 pr-8 text-black focus:outline-none"
 											disabled={true}
 											value={values.name}
+											maxLength="50"
 										/>
 										<button
 											type="button"
@@ -129,6 +130,7 @@ export default (prop) => {
 										className="w-full rounded-md bg-neutral-200 px-2 py-1 pr-8 text-black focus:outline-none"
 										disabled={true}
 										value={user.email}
+										maxLength="50"
 									/>
 								</div>
 							</label>

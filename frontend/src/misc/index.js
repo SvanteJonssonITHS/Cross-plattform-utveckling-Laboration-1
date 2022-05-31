@@ -123,13 +123,18 @@ const sortChats = (chat, otherChat) => {
 	return chatDate - otherChatDate;
 };
 
-const connectToSocket = (chat, setChats) => {
+const connectToSocket = (chat, setChats, chats = [], initial = false) => {
 	socket.on(`chat-${chat.id}`, (newMessage) => {
 		if (!newMessage) return;
 		chat.lastMessage = JSON.parse(JSON.stringify(newMessage));
 		chat.lastMessage.displayDate = formatDate(chat.lastMessage.updatedAt);
 		if (chat.messages && !chat.messages.includes(newMessage)) chat.messages.push(newMessage);
-		setChats((chats) => [...chats.sort((first, second) => sortChats(second, first))]);
+
+		if (initial) {
+			setChats([chat, ...chats]);
+		} else {
+			setChats((chats) => [...chats.sort((first, second) => sortChats(second, first))]);
+		}
 	});
 };
 

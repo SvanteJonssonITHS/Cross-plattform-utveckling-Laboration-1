@@ -11,7 +11,7 @@ const message = sequelize.define('message', {
 		autoIncrement: true
 	},
 	message: {
-		type: DataTypes.STRING,
+		type: DataTypes.TEXT,
 		allowNull: false
 	},
 	deleted: {

@@ -6,7 +6,7 @@ const mysql = require('mysql2');
 const MYSQLHOST = process.env.MYSQLHOST || 'localhost';
 const MYSQLUSER = process.env.MYSQLUSER || 'root';
 const MYSQLPASS = process.env.MYSQLPASS || '1234';
-const MYSQLDB = process.env.MYSQLDB || 'testDB';
+const MYSQLDB = process.env.MYSQLDB || 'testdb';
 
 exports.sequelize = new Sequelize(`mysql://${MYSQLUSER}:${MYSQLPASS}@${MYSQLHOST}:3306/${MYSQLDB}`, { logging: false });
 

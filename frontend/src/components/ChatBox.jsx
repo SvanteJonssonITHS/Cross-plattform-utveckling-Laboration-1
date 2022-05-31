@@ -138,6 +138,7 @@ export default (prop) => {
 						placeholder="Type a message..."
 						autoComplete="off"
 						ref={inputElement}
+						maxLength={255}
 					/>
 					<button
 						type="submit"
