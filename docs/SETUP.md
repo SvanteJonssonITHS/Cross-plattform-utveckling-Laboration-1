@@ -50,10 +50,10 @@ The following variables can be set in the `.env` file.
 
 ```bash
 PORT=3000
-MYSQLHOST =localhost
-MYSQLUSER =root
-MYSQLPASS =1234
-MYSQLDB =testDB
+MYSQLHOST=localhost
+MYSQLUSER=root
+MYSQLPASS=1234
+MYSQLDB=testDB
 ```
 
 Start the server.
