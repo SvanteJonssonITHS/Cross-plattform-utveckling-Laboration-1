@@ -44,7 +44,7 @@ export default function () {
 					</span>
 				</div>
 			</section>
-			<section className="hidden w-1/2 md:block">Image here</section>
+			<section className="hidden w-1/2 md:block" />
 		</main>
 	);
 }
