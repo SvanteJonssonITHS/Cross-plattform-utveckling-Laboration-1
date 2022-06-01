@@ -11,6 +11,7 @@ export default (prop) => {
 	const [name, setName] = useState(prop.chat.name || '');
 	const [messages, setMessages] = useState(prop.chat.messages || []);
 	const [showDropdown, setShowDropdown] = useState(false);
+	const [browserWidth, setBrowserWidth] = useState(window.innerWidth);
 	const chatEndElement = useRef(null);
 	const inputElement = useRef(null);
 	const scrollToBottom = () => chatEndElement.current.scrollIntoView({ behavior: 'smooth' });
@@ -21,21 +22,26 @@ export default (prop) => {
 		setMessages(prop.chat.messages);
 		if (chatEndElement.current) scrollToBottom();
 		if (chatEndElement.current) setFocus();
+		window.addEventListener('resize', () => setBrowserWidth(window.innerWidth));
 	}, [prop, name, messages]);
 
 	return (
 		<section className="flex h-full w-full flex-col">
 			<nav className="w-full">
 				<ul className="flex w-full items-center justify-between">
-					<li className="flex w-1/2 items-center">
-						<NavItem
-							onClick={() => prop.onBack()}
-							style={{ marginBottom: '0', marginRight: '0.5rem' }}
-							title="Go back"
-						>
-							<MdArrowBack size="1.5em" className="text-blue-500" />
-						</NavItem>
-						<h2 className="truncate text-lg font-semibold">{name}</h2>
+					<li className="flex w-3/4 items-center">
+						{browserWidth < 640 && (
+							<NavItem
+								onClick={() => prop.onBack()}
+								style={{ marginBottom: '0', marginRight: '0.5rem' }}
+								title="Go back"
+							>
+								<MdArrowBack size="1.5em" className="text-blue-500" />
+							</NavItem>
+						)}
+						<h2 className="truncate text-lg font-semibold" title={name}>
+							{name}
+						</h2>
 					</li>
 					<li>
 						<div className="relative">
