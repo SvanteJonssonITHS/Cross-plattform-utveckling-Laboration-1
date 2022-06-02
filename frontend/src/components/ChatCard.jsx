@@ -5,19 +5,14 @@ String.prototype.toRGB = function () {
 	let hash = 0;
 	if (this.length === 0) return hash;
 
-	for (let i = 0; i < this.length; i++) {
-		hash = this.charCodeAt(i) + ((hash << 5) - hash);
-		hash = hash & hash;
+	// Use each character's Unicode value to create a hash
+	for (const char of this) {
+		hash = char.charCodeAt() + ((hash << 5) - hash);
+		hash &= hash;
 	}
 
-	const rgb = [0, 0, 0];
-
-	for (let i = 0; i < 3; i++) {
-		const value = (hash >> (i * 8)) & 255;
-		rgb[i] = value;
-	}
-
-	return rgb;
+	// Return a rgb color code in form of an array using the hash
+	return [0, 0, 0].map((_, i) => (hash >> (i * 8)) & 0xff);
 };
 
 export default (prop) => {
@@ -30,7 +25,7 @@ export default (prop) => {
 	const [textColor, setTextColor] = useState('black');
 
 	useEffect(() => {
-		let rgb = name.toRGB();
+		const rgb = name.toRGB();
 		if (rgb) {
 			const brightness = Math.round((rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000);
 			setTextColor(brightness > 125 ? 'black' : 'white');
